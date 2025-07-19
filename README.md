@@ -206,3 +206,79 @@ Example:
 - Easy extensibility
 - SEO & social media readiness
 - Secure, authenticated purchasing
+
+## 🎨 UI/UX Design Requirements
+
+The website interface should be clean, modern, and mobile-friendly, with the following design principles and features:
+
+### 🔹 General UI Style
+- **Minimalistic and elegant** design with spacious layout
+- **Card-based layout** for product listings
+- Use **rounded corners**, **soft shadows**, and **subtle hover effects**
+- Font sizes: large for headings, readable for body (e.g., `text-xl`, `text-base`)
+- Stick to **2-3 primary brand colors** (configurable from backend)
+- Use **TailwindCSS** utility classes for consistent styling
+
+### 🔹 Navigation & Layout
+- Sticky top navbar with:
+  - Logo
+  - Search bar
+  - Category dropdown
+  - Auth/Login buttons
+- Left sidebar for categories and filters
+- Main content area for:
+  - Trending products (on homepage)
+  - Product listings (category pages)
+- **Responsive grid** for product cards (2–4 columns depending on screen size)
+
+### 🔹 Product Cards
+- Image at top, title and price below
+- Condition badge (e.g., “Refurbished”, “New”)
+- Quick action buttons (e.g., “Call Shop”, “Buy via M-PESA”)
+- Use tags or icons for verified sellers or featured items
+
+### 🔹 Product Page Design
+- Split layout: left image gallery, right-side details and price
+- Sticky “Buy via M-PESA” button
+- Contact info in a clean info box
+- Icons for attributes (e.g., storage, color, condition)
+- Social share buttons with branding colors and icons
+
+### 🔹 Filters and Sidebar
+- Accordion-style filter groups (expand/collapse)
+- Use checkboxes, sliders, or dropdowns where appropriate
+- Filters update the product list in real-time (JS-ready)
+
+### 🔹 Admin Panel UX
+- Left sidebar with links (Dashboard, Products, Orders, Settings)
+- Clean forms with validation
+- Color pickers for brand color configuration
+- Live preview of branding changes (if possible)
+- JSON field editor (for flexible product attributes)
+
+### 🔹 Color Scheme Configuration
+From the admin dashboard, shop owners can:
+- Choose a primary and secondary color
+- Choose a text color scheme (light/dark)
+- Upload logo and favicon
+- Set homepage banners and slogans
+
+Colors should be applied to:
+- Buttons
+- Active filters
+- Headings
+- Navigation bar
+
+### 🔹 Mobile Experience
+- Sticky bottom bar for important actions on mobile (e.g., “Call”, “Buy”)
+- Filters collapse into a drawer or accordion
+- Scrollable horizontal product sliders where needed
+- Responsive nav bar with hamburger menu
+
+### ✨ Design Style Summary for Generation
+- Use Tailwind CSS
+- Card-based layout
+- Clean, modern, responsive
+- Rounded corners, soft shadows
+- Brand color configurable from backend
+- Sticky buttons, beautiful typography
