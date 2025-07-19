@@ -53,6 +53,8 @@ This project is a **custom Laravel Blade-based E-commerce website** tailored for
   - OpenGraph & Twitter Card meta tags for preview generation
   - URL Slug based on product name
   - Optimized title, description, and keyword meta tags
+- Enables filter generation and dynamic display
+
 ---
 
 ### 🔹 4. Authentication System
@@ -103,6 +105,7 @@ This project is a **custom Laravel Blade-based E-commerce website** tailored for
     - Live chat (Tawk.to API key)
     - M-PESA API credentials
     - Full CMS-like controls for banner content and homepage text.
+    - Toggle features on/off from backend without code changes
 
 ---
 
@@ -126,6 +129,7 @@ Example:
 - This structure allows:
     - Flexible filter generation per category
     - Easily expandable product data
+    - Enables filter generation and dynamic display
 
 
 ### 🔹 8. Mobile Optimization
@@ -160,6 +164,7 @@ Example:
 - Optimized metadata (title, description, keywords)
 - OpenGraph / Twitter meta for social sharing
 - Clean, crawlable HTML structure
+- Sitemap generation for SEO indexing
 
 ### 🔹 12. 🔁 Extensibility
 - Easily add new payment providers (e.g. PayPal, Card)
@@ -172,6 +177,13 @@ Example:
 - Sales reports
 - MPESA transaction logs
 - Optional Google Analytics integration
+
+### 🔹 14. 🔎 Search & Filtering
+- Global search input (products, categories, subcategories)
+- Sidebar filters include:
+  - Expandable attributes (e.g., Internal Storage [+])
+  - Filter types: Checkbox, radio, range slider
+- Filters auto-update based on selected category
 
 ## ⚙️ Backend Configurable Settings
 | Feature                     | Configurable From Admin? |
@@ -193,19 +205,150 @@ Example:
 - Cache category counts and filters for speed
 - Queue background jobs (e.g., sending emails, M-PESA verification)
 
-## ✅ Deployment
-- Docker-ready or use shared hosting
-- Env config for MPESA, Tawk.to, and database
-- Use Laravel Scheduler for cleanup & monitoring
-- Regular backups and server monitoring
+## ✅ Performance Optimizations
 
-## ✅ Summary
-- This E-commerce system is designed to deliver:
-- High performance
-- Maximum configurability
-- Easy extensibility
-- SEO & social media readiness
-- Secure, authenticated purchasing
+- **Eager Loading**
+  - Avoid N+1 queries when fetching relationships.
+  - Example:
+    ```php
+    Product::with('category', 'images')->get();
+    ```
+
+- **Database Indexing**
+  - Add indexes to all foreign keys:
+    - `category_id`, `user_id`, `product_id`, `parent_id`
+  - Also index frequently queried fields:
+    - `slug`, `status`, `is_featured`, `price`
+  - For JSON columns (if using PostgreSQL or MySQL 8+):
+    - Consider virtual columns and indexing common keys.
+
+- **Caching**
+  - Cache results of expensive queries:
+    ```php
+    Cache::remember('categories_list', now()->addHours(24), fn () => Category::all());
+    ```
+  - Cache settings, filters, homepage data, and sitemap if dynamic.
+
+- **Image Optimization**
+  - Use [`spatie/laravel-medialibrary`](https://github.com/spatie/laravel-medialibrary) to:
+    - Auto-generate responsive image sizes (thumbnails, previews).
+    - Compress images on upload to improve page load speeds.
+    - Store optimized images via filesystem, S3, or CDN.
+
+- **Pagination & Lazy Loading**
+  - Use pagination for large queries.
+  - Apply lazy loading in Blade views for image-heavy pages.
+
+---
+
+## 🧵 Queue Management (Laravel Horizon)
+
+- Horizon handles:
+  - M-PESA payment confirmations
+  - Image processing
+  - Sending emails & SMS
+  - Scheduled tasks (e.g., sitemap generation)
+
+```bash
+composer require laravel/horizon
+php artisan horizon:install
+php artisan migrate
+```
+
+## 🛡️ System Monitoring and Logging
+
+### 🔍 Application Performance Monitoring
+
+- **Laravel Telescope**
+  - Monitor HTTP requests, jobs, queues, exceptions, database queries, emails, scheduled tasks, and more.
+  - Ideal for development and staging environments.
+  - Install with:
+    ```bash
+    composer require laravel/telescope
+    php artisan telescope:install
+    php artisan migrate
+    ```
+  - Access via `/telescope`.
+
+- **Production Monitoring**
+  - Use advanced tools like:
+    - [Blackfire.io](https://blackfire.io/)
+    - [New Relic](https://newrelic.com/)
+    - [Laravel Vapor Metrics (if using Vapor)](https://vapor.laravel.com/docs/1.0/metrics.html)
+
+- **Database Query Optimization**
+  - Use Telescope or Laravel Debugbar to monitor slow queries.
+  - Avoid N+1 queries with eager loading (`with()`).
+
+---
+
+### 📈 User Behavior and Usage Analytics
+
+- **Anonymous Analytics**
+  - Track user behavior with:
+    - [Plausible](https://plausible.io/)
+    - [Umami](https://umami.is/)
+  - These tools are privacy-friendly and don’t require user consent.
+
+- **Session Monitoring**
+  - Integrate with **Tawk.to** live chat to:
+    - Track active visitors
+    - Monitor sessions and chat history
+    - View user navigation in real-time
+
+---
+
+### 🪵 Logging
+
+- **Laravel Default Logging**
+  - Uses Monolog under the hood.
+  - Logs are stored in `storage/logs/laravel.log` by default.
+  - Recommended: switch to `daily` log channel in `config/logging.php`.
+
+- **Log Viewing**
+  - Use [`arcanedev/log-viewer`](https://github.com/ARCANEDEV/LogViewer) to view logs in-browser:
+    ```bash
+    composer require arcanedev/log-viewer
+    ```
+
+- **Error Alerts**
+  - Set up error reporting with third-party tools:
+    - [Sentry](https://sentry.io/)
+    - [Flare](https://flareapp.io/)
+    - [Bugsnag](https://www.bugsnag.com/)
+
+- **Slack & Email Alerts**
+  - Configure channels in `config/logging.php` to push logs to Slack or send critical error emails.
+  - Example Slack log channel:
+    ```php
+    'slack' => [
+        'driver' => 'slack',
+        'url' => env('LOG_SLACK_WEBHOOK_URL'),
+        'username' => 'Laravel Logs',
+        'emoji' => ':boom:',
+        'level' => 'error',
+    ],
+    ```
+
+---
+
+### 🛠 System Health Checks (Optional)
+
+- Consider using [`spatie/laravel-health`](https://github.com/spatie/laravel-health) to monitor:
+  - Database connection
+  - Cache performance
+  - Disk space usage
+  - Queue workers
+  - External API health
+
+---
+
+### 🔁 Cron Job Monitoring
+
+- Use a tool like [Laravel Scheduler Monitor](https://github.com/spatie/laravel-schedule-monitor) to:
+  - Ensure scheduled tasks run as expected
+  - Get notified if a cron job fails or skips
+
 
 ## 🎨 UI/UX Design Requirements
 
@@ -282,3 +425,12 @@ Colors should be applied to:
 - Rounded corners, soft shadows
 - Brand color configurable from backend
 - Sticky buttons, beautiful typography
+
+## 📁 Project Structure (Laravel + Blade + Tailwind)
+- `/app/Http/Controllers` — All business logic
+- `/resources/views` — Blade templates (UI)
+- `/resources/css` — Tailwind config and styles
+- `/routes/web.php` — Web routes
+- `/routes/api.php` — API routes (for mobile or external services)
+- `/public/` — Public assets, favicon, logos
+- `/config/` — Config files including M-PESA, Tawk.to, and UI settings
