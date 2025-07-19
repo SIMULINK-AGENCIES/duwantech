@@ -426,11 +426,372 @@ Colors should be applied to:
 - Brand color configurable from backend
 - Sticky buttons, beautiful typography
 
-## 📁 Project Structure (Laravel + Blade + Tailwind)
-- `/app/Http/Controllers` — All business logic
-- `/resources/views` — Blade templates (UI)
-- `/resources/css` — Tailwind config and styles
-- `/routes/web.php` — Web routes
-- `/routes/api.php` — API routes (for mobile or external services)
+## 📁 Detailed Project Structure (Laravel + Blade + Tailwind)
+
+```
+duwantech/
+├── app/
+│   ├── Console/
+│   │   └── Commands/
+│   │       ├── GenerateSitemap.php
+│   │       └── ProcessMpesaCallbacks.php
+│   │
+│   ├── Events/
+│   │   ├── OrderCreated.php
+│   │   ├── PaymentReceived.php
+│   │   └── UserRegistered.php
+│   │
+│   ├── Exceptions/
+│   │   ├── Handler.php
+│   │   └── MpesaException.php
+│   │
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Admin/
+│   │   │   │   ├── AdminController.php
+│   │   │   │   ├── CategoryController.php
+│   │   │   │   ├── DashboardController.php
+│   │   │   │   ├── OrderController.php
+│   │   │   │   ├── ProductController.php
+│   │   │   │   ├── SettingsController.php
+│   │   │   │   └── UserController.php
+│   │   │   ├── Api/
+│   │   │   │   ├── AuthController.php
+│   │   │   │   ├── CategoryController.php
+│   │   │   │   ├── PaymentController.php
+│   │   │   │   └── ProductController.php
+│   │   │   ├── Auth/
+│   │   │   │   ├── LoginController.php
+│   │   │   │   ├── RegisterController.php
+│   │   │   │   └── VerificationController.php
+│   │   │   ├── CategoryController.php
+│   │   │   ├── CheckoutController.php
+│   │   │   ├── HomeController.php
+│   │   │   ├── PaymentController.php
+│   │   │   ├── ProductController.php
+│   │   │   └── SearchController.php
+│   │   │
+│   │   ├── Middleware/
+│   │   │   ├── AdminMiddleware.php
+│   │   │   ├── VerifiedUserMiddleware.php
+│   │   │   └── RateLimitMiddleware.php
+│   │   │
+│   │   └── Requests/
+│   │       ├── Admin/
+│   │       │   ├── CategoryRequest.php
+│   │       │   ├── ProductRequest.php
+│   │       │   └── SettingsRequest.php
+│   │       ├── Auth/
+│   │       │   ├── LoginRequest.php
+│   │       │   └── RegisterRequest.php
+│   │       └── CheckoutRequest.php
+│   │
+│   ├── Jobs/
+│   │   ├── ProcessImageOptimization.php
+│   │   ├── ProcessMpesaPayment.php
+│   │   ├── SendOrderConfirmation.php
+│   │   └── SendVerificationSMS.php
+│   │
+│   ├── Listeners/
+│   │   ├── SendOrderNotification.php
+│   │   ├── UpdatePaymentStatus.php
+│   │   └── SendWelcomeEmail.php
+│   │
+│   ├── Models/
+│   │   ├── Category.php
+│   │   ├── Order.php
+│   │   ├── OrderItem.php
+│   │   ├── Payment.php
+│   │   ├── Product.php
+│   │   ├── ProductImage.php
+│   │   ├── Setting.php
+│   │   └── User.php
+│   │
+│   ├── Notifications/
+│   │   ├── OrderConfirmation.php
+│   │   ├── PaymentReceived.php
+│   │   └── VerificationCode.php
+│   │
+│   ├── Policies/
+│   │   ├── CategoryPolicy.php
+│   │   ├── OrderPolicy.php
+│   │   ├── ProductPolicy.php
+│   │   └── UserPolicy.php
+│   │
+│   ├── Providers/
+│   │   ├── AppServiceProvider.php
+│   │   ├── AuthServiceProvider.php
+│   │   ├── EventServiceProvider.php
+│   │   └── RouteServiceProvider.php
+│   │
+│   ├── Services/
+│   │   ├── ImageOptimizationService.php
+│   │   ├── MpesaService.php
+│   │   ├── SearchService.php
+│   │   ├── SeoService.php
+│   │   └── TawkToService.php
+│   │
+│   └── Traits/
+│       ├── HasSlug.php
+│       ├── HasUuid.php
+│       └── Searchable.php
+│
+├── bootstrap/
+│   ├── app.php
+│   └── cache/
+│
+├── config/
+│   ├── app.php
+│   ├── auth.php
+│   ├── cache.php
+│   ├── database.php
+│   ├── filesystems.php
+│   ├── logging.php
+│   ├── mail.php
+│   ├── mpesa.php              # M-PESA configuration
+│   ├── queue.php
+│   ├── services.php           # Third-party services (Tawk.to, etc.)
+│   ├── session.php
+│   └── seo.php               # SEO defaults configuration
+│
+├── database/
+│   ├── factories/
+│   │   ├── CategoryFactory.php
+│   │   ├── OrderFactory.php
+│   │   ├── ProductFactory.php
+│   │   └── UserFactory.php
+│   │
+│   ├── migrations/
+│   │   ├── 2024_01_01_000000_create_users_table.php
+│   │   ├── 2024_01_02_000000_create_categories_table.php
+│   │   ├── 2024_01_03_000000_create_products_table.php
+│   │   ├── 2024_01_04_000000_create_product_images_table.php
+│   │   ├── 2024_01_05_000000_create_orders_table.php
+│   │   ├── 2024_01_06_000000_create_order_items_table.php
+│   │   ├── 2024_01_07_000000_create_payments_table.php
+│   │   ├── 2024_01_08_000000_create_settings_table.php
+│   │   └── 2024_01_09_000000_add_indexes_for_performance.php
+│   │
+│   └── seeders/
+│       ├── CategorySeeder.php
+│       ├── DatabaseSeeder.php
+│       ├── ProductSeeder.php
+│       ├── SettingsSeeder.php
+│       └── UserSeeder.php
+│
+├── public/
+│   ├── assets/
+│   │   ├── css/
+│   │   │   └── app.css
+│   │   ├── js/
+│   │   │   ├── app.js
+│   │   │   ├── filters.js
+│   │   │   └── search.js
+│   │   └── images/
+│   │       ├── default-product.jpg
+│   │       ├── favicon.ico
+│   │       └── logo.png
+│   ├── storage/
+│   │   ├── products/          # Product images
+│   │   └── settings/          # Logo, banners
+│   ├── .htaccess
+│   ├── index.php
+│   ├── robots.txt
+│   └── sitemap.xml
+│
+├── resources/
+│   ├── css/
+│   │   ├── app.css
+│   │   └── admin.css
+│   │
+│   ├── js/
+│   │   ├── app.js
+│   │   ├── bootstrap.js
+│   │   ├── components/
+│   │   │   ├── filters.js
+│   │   │   ├── search.js
+│   │   │   └── cart.js
+│   │   └── admin/
+│   │       ├── dashboard.js
+│   │       └── product-form.js
+│   │
+│   ├── lang/
+│   │   └── en/
+│   │       ├── auth.php
+│   │       ├── messages.php
+│   │       └── validation.php
+│   │
+│   └── views/
+│       ├── admin/
+│       │   ├── categories/
+│       │   │   ├── create.blade.php
+│       │   │   ├── edit.blade.php
+│       │   │   └── index.blade.php
+│       │   ├── orders/
+│       │   │   ├── index.blade.php
+│       │   │   └── show.blade.php
+│       │   ├── products/
+│       │   │   ├── create.blade.php
+│       │   │   ├── edit.blade.php
+│       │   │   └── index.blade.php
+│       │   ├── settings/
+│       │   │   ├── general.blade.php
+│       │   │   ├── mpesa.blade.php
+│       │   │   ├── seo.blade.php
+│       │   │   └── social.blade.php
+│       │   ├── users/
+│       │   │   └── index.blade.php
+│       │   ├── dashboard.blade.php
+│       │   └── layout.blade.php
+│       │
+│       ├── auth/
+│       │   ├── login.blade.php
+│       │   ├── register.blade.php
+│       │   ├── verify.blade.php
+│       │   └── passwords/
+│       │       ├── email.blade.php
+│       │       └── reset.blade.php
+│       │
+│       ├── components/
+│       │   ├── category-sidebar.blade.php
+│       │   ├── filters.blade.php
+│       │   ├── navigation.blade.php
+│       │   ├── product-card.blade.php
+│       │   ├── search-bar.blade.php
+│       │   └── social-share.blade.php
+│       │
+│       ├── emails/
+│       │   ├── order-confirmation.blade.php
+│       │   ├── payment-received.blade.php
+│       │   └── verification.blade.php
+│       │
+│       ├── layouts/
+│       │   ├── app.blade.php
+│       │   ├── guest.blade.php
+│       │   └── partials/
+│       │       ├── footer.blade.php
+│       │       ├── head.blade.php
+│       │       ├── navigation.blade.php
+│       │       └── scripts.blade.php
+│       │
+│       ├── pages/
+│       │   ├── about.blade.php
+│       │   ├── contact.blade.php
+│       │   ├── privacy.blade.php
+│       │   └── terms.blade.php
+│       │
+│       ├── products/
+│       │   ├── category.blade.php
+│       │   ├── search.blade.php
+│       │   └── show.blade.php
+│       │
+│       ├── checkout/
+│       │   ├── index.blade.php
+│       │   ├── payment.blade.php
+│       │   └── success.blade.php
+│       │
+│       ├── errors/
+│       │   ├── 404.blade.php
+│       │   ├── 419.blade.php
+│       │   └── 500.blade.php
+│       │
+│       └── home.blade.php
+│
+├── routes/
+│   ├── admin.php             # Admin panel routes
+│   ├── api.php              # API routes for mobile/external
+│   ├── auth.php             # Authentication routes
+│   ├── channels.php         # Broadcast channels
+│   ├── console.php          # Artisan commands
+│   └── web.php              # Main web routes
+│
+├── storage/
+│   ├── app/
+│   │   ├── private/
+│   │   └── public/
+│   │       ├── products/     # Product images
+│   │       └── settings/     # Uploaded logos, banners
+│   ├── framework/
+│   │   ├── cache/
+│   │   ├── sessions/
+│   │   └── views/
+│   └── logs/
+│       └── laravel.log
+│
+├── tests/
+│   ├── Feature/
+│   │   ├── Admin/
+│   │   │   ├── CategoryManagementTest.php
+│   │   │   ├── OrderManagementTest.php
+│   │   │   └── ProductManagementTest.php
+│   │   ├── Auth/
+│   │   │   ├── LoginTest.php
+│   │   │   ├── RegisterTest.php
+│   │   │   └── VerificationTest.php
+│   │   ├── CheckoutTest.php
+│   │   ├── HomePageTest.php
+│   │   ├── PaymentTest.php
+│   │   ├── ProductTest.php
+│   │   └── SearchTest.php
+│   │
+│   ├── Unit/
+│   │   ├── Models/
+│   │   │   ├── CategoryTest.php
+│   │   │   ├── OrderTest.php
+│   │   │   ├── ProductTest.php
+│   │   │   └── UserTest.php
+│   │   ├── Services/
+│   │   │   ├── MpesaServiceTest.php
+│   │   │   ├── SearchServiceTest.php
+│   │   │   └── SeoServiceTest.php
+│   │   └── TestCase.php
+│   │
+│   ├── CreatesApplication.php
+│   └── TestCase.php
+│
+├── vendor/                   # Composer dependencies
+├── .env                     # Environment configuration
+├── .env.example            # Environment template
+├── .gitignore
+├── artisan                 # Laravel CLI
+├── composer.json
+├── composer.lock
+├── package.json            # NPM dependencies
+├── package-lock.json
+├── phpunit.xml            # PHPUnit configuration
+├── README.md
+├── tailwind.config.js     # Tailwind CSS configuration
+├── vite.config.js         # Vite build configuration
+└── webpack.mix.js         # Laravel Mix (if using Mix instead of Vite)
+```
+
+### 🔹 Key Architecture Components
+
+#### **Models & Relationships**
+- `User` → hasMany `Order`
+- `Category` → hasMany `Product`, belongsTo `Category` (parent)
+- `Product` → belongsTo `Category`, hasMany `ProductImage`, hasMany `OrderItem`
+- `Order` → belongsTo `User`, hasMany `OrderItem`, hasOne `Payment`
+- `Payment` → belongsTo `Order`
+
+#### **Services Layer**
+- `MpesaService` → Handle STK Push, callbacks, validation
+- `SearchService` → Global search, filtering logic
+- `SeoService` → Meta tags, OpenGraph, structured data
+- `ImageOptimizationService` → Image compression, thumbnails
+- `TawkToService` → Live chat integration
+
+#### **Admin Panel Structure**
+- Role-based access using Spatie permissions
+- Separate admin routes and middleware
+- CRUD operations for all entities
+- Settings management with live preview
+- JSON attribute management for products
+
+#### **Frontend Structure**
+- Responsive Blade templates with Tailwind CSS
+- Component-based UI (search bar, product cards, filters)
+- JavaScript modules for interactivity
+- SEO-optimized page structure
 - `/public/` — Public assets, favicon, logos
 - `/config/` — Config files including M-PESA, Tawk.to, and UI settings
