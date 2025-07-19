@@ -1,4 +1,4 @@
-# 🛍️ Laravel E-commerce System for the Kenyan Market
+# 🛍️ Laravel E-commerce System for the duwantech's Kenyan Market
 
 This project is a **custom Laravel Blade-based E-commerce website** tailored for selling multiple product categories in Kenya. It is optimized for flexibility, search engine ranking, mobile responsiveness, and ease of configuration via a powerful backend dashboard.
 
