@@ -332,5 +332,11 @@
             </main>
         </div>
     </div>
+    
+    <!-- Pusher JS for real-time functionality -->
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+    
+    <!-- Page-specific scripts -->
+    @stack('scripts')
 </body>
 </html> 

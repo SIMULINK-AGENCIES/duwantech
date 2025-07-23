@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Category;
+use App\Helpers\UserActivityHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -56,5 +57,34 @@ class AdminController extends Controller
     public function profile()
     {
         return view('admin.profile');
+    }
+    
+    /**
+     * Get live user statistics for the admin monitoring dashboard
+     */
+    public function getLiveStats(Request $request)
+    {
+        try {
+            // Get live user statistics
+            $stats = UserActivityHelper::getLiveStats();
+            
+            return response()->json([
+                'success' => true,
+                'stats' => $stats,
+                'timestamp' => now()->toISOString(),
+                'message' => 'Live statistics retrieved successfully'
+            ]);
+            
+        } catch (\Exception $e) {
+            \Log::error('Failed to get live stats: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'error' => 'Failed to retrieve live statistics',
+                'message' => config('app.debug') ? $e->getMessage() : 'Internal server error'
+            ], 500);
+        }
     }
 } 

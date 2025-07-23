@@ -48,6 +48,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('mpesa/callbacks', [MpesaController::class, 'generateCallbacks'])->name('mpesa.callbacks');
     Route::get('mpesa/export', [MpesaController::class, 'export'])->name('mpesa.export');
     
+    // Live User Monitoring API
+    Route::get('api/live-stats', [AdminController::class, 'getLiveStats'])->name('api.live-stats');
+    
     // Profile Management
     Route::get('profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');

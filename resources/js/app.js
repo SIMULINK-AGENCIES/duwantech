@@ -1,4 +1,5 @@
 import './bootstrap';
+import './components/LiveUserCounter';
 
 import Alpine from 'alpinejs';
 
