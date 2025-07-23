@@ -6,6 +6,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
+/**
+ * App\Models\AdminNotification
+ *
+ * @property int $id
+ * @property string $type
+ * @property string $priority
+ * @property string $title
+ * @property string $message
+ * @property array|null $data
+ * @property string|null $action_url
+ * @property bool $is_read
+ * @property int|null $user_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User|null $user
+ */
 class AdminNotification extends Model
 {
     use HasFactory;
@@ -17,29 +33,30 @@ class AdminNotification extends Model
         'message',
         'data',
         'action_url',
-        'read_at',
+        'is_read',
+        'user_id',
     ];
 
     protected $casts = [
         'data' => 'array',
-        'read_at' => 'datetime',
+        'is_read' => 'boolean',
     ];
 
     /**
-     * The attributes that should be mutated to dates.
+     * Get the user associated with this notification.
      */
-    protected $dates = [
-        'read_at',
-    ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     /**
      * Notification types enum values.
      */
-    const TYPE_ORDER = 'order';
-    const TYPE_PAYMENT = 'payment';
-    const TYPE_INVENTORY = 'inventory';
-    const TYPE_USER = 'user';
-    const TYPE_SYSTEM = 'system';
+    const TYPE_INFO = 'info';
+    const TYPE_WARNING = 'warning';
+    const TYPE_SUCCESS = 'success';
+    const TYPE_ERROR = 'error';
 
     /**
      * Priority levels enum values.
@@ -47,14 +64,13 @@ class AdminNotification extends Model
     const PRIORITY_LOW = 'low';
     const PRIORITY_MEDIUM = 'medium';
     const PRIORITY_HIGH = 'high';
-    const PRIORITY_CRITICAL = 'critical';
 
     /**
      * Scope to get unread notifications.
      */
     public function scopeUnread($query)
     {
-        return $query->whereNull('read_at');
+        return $query->where('is_read', false);
     }
 
     /**
@@ -62,7 +78,7 @@ class AdminNotification extends Model
      */
     public function scopeRead($query)
     {
-        return $query->whereNotNull('read_at');
+        return $query->where('is_read', true);
     }
 
     /**
@@ -86,15 +102,7 @@ class AdminNotification extends Model
      */
     public function scopeHighPriority($query)
     {
-        return $query->whereIn('priority', [self::PRIORITY_HIGH, self::PRIORITY_CRITICAL]);
-    }
-
-    /**
-     * Scope to get critical notifications.
-     */
-    public function scopeCritical($query)
-    {
-        return $query->where('priority', self::PRIORITY_CRITICAL);
+        return $query->where('priority', self::PRIORITY_HIGH);
     }
 
     /**
@@ -118,7 +126,7 @@ class AdminNotification extends Model
      */
     public function markAsRead(): bool
     {
-        return $this->update(['read_at' => Carbon::now()]);
+        return $this->update(['is_read' => true]);
     }
 
     /**
@@ -126,7 +134,7 @@ class AdminNotification extends Model
      */
     public function markAsUnread(): bool
     {
-        return $this->update(['read_at' => null]);
+        return $this->update(['is_read' => false]);
     }
 
     /**
@@ -134,7 +142,7 @@ class AdminNotification extends Model
      */
     public function isRead(): bool
     {
-        return !is_null($this->read_at);
+        return $this->is_read;
     }
 
     /**
@@ -142,7 +150,7 @@ class AdminNotification extends Model
      */
     public function isUnread(): bool
     {
-        return is_null($this->read_at);
+        return !$this->is_read;
     }
 
     /**
@@ -154,7 +162,6 @@ class AdminNotification extends Model
             self::PRIORITY_LOW => 'text-gray-500',
             self::PRIORITY_MEDIUM => 'text-blue-500',
             self::PRIORITY_HIGH => 'text-orange-500',
-            self::PRIORITY_CRITICAL => 'text-red-500',
             default => 'text-gray-500',
         };
     }
@@ -165,12 +172,39 @@ class AdminNotification extends Model
     public function getTypeIconAttribute(): string
     {
         return match($this->type) {
-            self::TYPE_ORDER => 'fas fa-shopping-cart',
-            self::TYPE_PAYMENT => 'fas fa-credit-card',
-            self::TYPE_INVENTORY => 'fas fa-boxes',
-            self::TYPE_USER => 'fas fa-user',
-            self::TYPE_SYSTEM => 'fas fa-cog',
+            self::TYPE_INFO => 'fas fa-info-circle',
+            self::TYPE_WARNING => 'fas fa-exclamation-triangle',
+            self::TYPE_SUCCESS => 'fas fa-check-circle',
+            self::TYPE_ERROR => 'fas fa-times-circle',
             default => 'fas fa-bell',
+        };
+    }
+
+    /**
+     * Get notification icon (SVG format).
+     */
+    public function getIcon(): string
+    {
+        return match($this->type) {
+            self::TYPE_INFO => '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>',
+            self::TYPE_WARNING => '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path></svg>',
+            self::TYPE_SUCCESS => '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>',
+            self::TYPE_ERROR => '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>',
+            default => '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>',
+        };
+    }
+
+    /**
+     * Get notification color class.
+     */
+    public function getColorClass(): string
+    {
+        return match($this->type) {
+            self::TYPE_INFO => 'bg-blue-100 text-blue-600',
+            self::TYPE_WARNING => 'bg-yellow-100 text-yellow-600',
+            self::TYPE_SUCCESS => 'bg-green-100 text-green-600',
+            self::TYPE_ERROR => 'bg-red-100 text-red-600',
+            default => 'bg-gray-100 text-gray-600',
         };
     }
 
@@ -188,11 +222,10 @@ class AdminNotification extends Model
     public static function getTypes(): array
     {
         return [
-            self::TYPE_ORDER,
-            self::TYPE_PAYMENT,
-            self::TYPE_INVENTORY,
-            self::TYPE_USER,
-            self::TYPE_SYSTEM,
+            self::TYPE_INFO,
+            self::TYPE_WARNING,
+            self::TYPE_SUCCESS,
+            self::TYPE_ERROR,
         ];
     }
 
@@ -205,7 +238,6 @@ class AdminNotification extends Model
             self::PRIORITY_LOW,
             self::PRIORITY_MEDIUM,
             self::PRIORITY_HIGH,
-            self::PRIORITY_CRITICAL,
         ];
     }
 }

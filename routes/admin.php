@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ActivityController;
+use App\Http\Controllers\Admin\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -55,8 +57,19 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('activity', [App\Http\Controllers\Admin\ActivityController::class, 'index'])->name('activity.index');
     Route::get('api/live-activities', [App\Http\Controllers\Admin\ActivityController::class, 'getLiveActivities'])->name('api.live-activities');
     
-    // Profile Management
-    Route::get('profile', [ProfileController::class, 'show'])->name('profile.show');
+    // Notifications
+    Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('notifications/dropdown', [NotificationController::class, 'dropdown'])->name('notifications.dropdown');
+    Route::get('notifications/count', [NotificationController::class, 'count'])->name('notifications.count');
+    Route::post('notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
+    Route::delete('notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+    Route::post('notifications/bulk-delete', [NotificationController::class, 'bulkDelete'])->name('notifications.bulk-delete');
+    Route::post('notifications/test', [NotificationController::class, 'createTest'])->name('notifications.test');
+    Route::post('notifications/preferences', [NotificationController::class, 'updatePreferences'])->name('notifications.preferences');
+    
+    // Profile Management (using simple name for admin.profile route)
+    Route::get('profile', [ProfileController::class, 'show'])->name('profile');
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::put('profile/two-factor', [ProfileController::class, 'updateTwoFactor'])->name('profile.two-factor');
