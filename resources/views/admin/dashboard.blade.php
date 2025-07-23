@@ -252,5 +252,17 @@
             </div>
         </div>
     </div>
+    
+    <!-- Activity Feed Section -->
+    <div class="mt-6">
+        @include('admin.components.activity-feed', [
+            'config' => [
+                'maxActivities' => 20,
+                'autoRefresh' => true,
+                'showFilters' => true,
+                'compact' => false
+            ]
+        ])
+    </div>
 </div>
 @endsection 
