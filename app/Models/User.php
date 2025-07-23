@@ -82,6 +82,65 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
+    /**
+     * Get the user's active sessions.
+     */
+    public function activeSessions(): HasMany
+    {
+        return $this->hasMany(ActiveSession::class);
+    }
+
+    /**
+     * Get the user's current active sessions.
+     */
+    public function currentActiveSessions(): HasMany
+    {
+        return $this->activeSessions()->active();
+    }
+
+    /**
+     * Get the user's notification preferences.
+     */
+    public function notificationPreferences()
+    {
+        return $this->hasOne(NotificationPreference::class);
+    }
+
+    /**
+     * Get the user's activity logs.
+     */
+    public function activityLogs(): HasMany
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
+
+    /**
+     * Get recent activity logs for the user.
+     */
+    public function recentActivityLogs(): HasMany
+    {
+        return $this->activityLogs()->recent()->orderBy('created_at', 'desc')->limit(10);
+    }
+
+    /**
+     * Check if user is currently online.
+     */
+    public function isOnline(): bool
+    {
+        return $this->activeSessions()->active()->exists();
+    }
+
+    /**
+     * Get user's notification preferences or create default ones.
+     */
+    public function getNotificationPreferences(): NotificationPreference
+    {
+        return $this->notificationPreferences()->firstOrCreate(
+            ['user_id' => $this->id],
+            NotificationPreference::getDefaults()
+        );
+    }
+
     public function isAdmin()
     {
         return $this->hasRole('admin');
