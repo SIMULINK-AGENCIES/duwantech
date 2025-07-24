@@ -43,6 +43,22 @@ class AdminNotification extends Model
     ];
 
     /**
+     * Scope for unread notifications
+     */
+    public function scopeUnread($query)
+    {
+        return $query->where('is_read', false);
+    }
+
+    /**
+     * Scope for read notifications
+     */
+    public function scopeRead($query)
+    {
+        return $query->where('is_read', true);
+    }
+
+    /**
      * Get the user associated with this notification.
      */
     public function user()
@@ -64,22 +80,6 @@ class AdminNotification extends Model
     const PRIORITY_LOW = 'low';
     const PRIORITY_MEDIUM = 'medium';
     const PRIORITY_HIGH = 'high';
-
-    /**
-     * Scope to get unread notifications.
-     */
-    public function scopeUnread($query)
-    {
-        return $query->where('is_read', false);
-    }
-
-    /**
-     * Scope to get read notifications.
-     */
-    public function scopeRead($query)
-    {
-        return $query->where('is_read', true);
-    }
 
     /**
      * Scope to filter by notification type.

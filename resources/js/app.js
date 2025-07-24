@@ -1,7 +1,7 @@
 import './bootstrap';
 import './components/LiveUserCounter';
 import './components/ActivityFeed';
-import './NotificationBell';
+import './components/NotificationBell';
 
 import Alpine from 'alpinejs';
 

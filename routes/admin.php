@@ -59,6 +59,23 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     
     // Notifications
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    
+    // Notification API endpoints for real-time updates
+    Route::prefix('api/notifications')->name('api.notifications.')->group(function () {
+        Route::get('/', [NotificationController::class, 'getNotifications']);
+        Route::get('/count', [NotificationController::class, 'getUnreadCount']);
+        Route::post('/{notification}/read', [NotificationController::class, 'markAsRead']);
+        Route::post('/{notification}/unread', [NotificationController::class, 'markAsUnread']);
+        Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+        Route::delete('/{notification}', [NotificationController::class, 'destroy']);
+        Route::post('/bulk-delete', [NotificationController::class, 'bulkDelete']);
+        Route::post('/bulk-read', [NotificationController::class, 'bulkMarkAsRead']);
+        Route::get('/stats', [NotificationController::class, 'getStats']);
+        Route::post('/test', [NotificationController::class, 'createTestNotification']);
+        Route::post('/clear-old', [NotificationController::class, 'clearOld']);
+    });
+    
+    // Legacy notification routes (for backward compatibility)
     Route::get('notifications/dropdown', [NotificationController::class, 'dropdown'])->name('notifications.dropdown');
     Route::get('notifications/count', [NotificationController::class, 'count'])->name('notifications.count');
     Route::post('notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
