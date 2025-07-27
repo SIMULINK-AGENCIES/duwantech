@@ -55,6 +55,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Live User Monitoring API
     Route::get('api/live-stats', [AdminController::class, 'getLiveStats'])->name('api.live-stats');
     
+    // Search API
+    Route::get('api/search', [AdminController::class, 'search'])->name('api.search');
+    
     // Activity Feed
     Route::get('activity', [App\Http\Controllers\Admin\ActivityController::class, 'index'])->name('activity.index');
     Route::get('api/live-activities', [App\Http\Controllers\Admin\ActivityController::class, 'getLiveActivities'])->name('api.live-activities');

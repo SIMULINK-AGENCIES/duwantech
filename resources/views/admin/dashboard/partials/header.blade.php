@@ -63,7 +63,7 @@
         </div>
 
         {{-- Center Section: Global Search --}}
-        <div class="flex-1 max-w-lg mx-4 hidden md:block" x-data="globalSearch()">
+        <div class="flex-1 max-w-lg mx-4 hidden md:block" x-data="{ localSearchOpen: false }">
             <div class="relative">
                 {{-- Search Input --}}
                 <div class="relative">
@@ -73,14 +73,15 @@
                         </svg>
                     </div>
                     <input type="text"
+                           x-data="globalSearch()"
                            x-model="searchQuery"
                            @input.debounce.300ms="performSearch"
-                           @keydown.escape="clearSearch"
+                           @keydown.escape="clearSearch(); localSearchOpen = false; $store.dropdowns.closeAll()"
                            @keydown.arrow-down.prevent="highlightNext"
                            @keydown.arrow-up.prevent="highlightPrev"
                            @keydown.enter.prevent="selectHighlighted"
-                           @focus="showResults = true"
-                           @click.away="showResults = false"
+                           @focus="if(searchQuery.length >= 2) { localSearchOpen = true; $store.dropdowns.open('search'); }"
+                           @click="if(searchQuery.length >= 2) { localSearchOpen = true; $store.dropdowns.open('search'); }"
                            class="block w-full pl-10 pr-12 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition-colors duration-200"
                            placeholder="Search orders, products, customers... (Ctrl+K)"
                            autocomplete="off">
@@ -94,14 +95,16 @@
                 </div>
 
                 {{-- Search Results Dropdown --}}
-                <div x-show="showResults && (searchResults.length > 0 || isLoading)"
+                <div x-show="$store.dropdowns.active === 'search' && searchQuery.length >= 2 && (searchResults.length > 0 || isLoading)"
                      x-transition:enter="transition ease-out duration-200"
                      x-transition:enter-start="opacity-0 scale-95"
                      x-transition:enter-end="opacity-100 scale-100"
                      x-transition:leave="transition ease-in duration-150"
                      x-transition:leave-start="opacity-100 scale-100"
                      x-transition:leave-end="opacity-0 scale-95"
-                     class="absolute z-50 mt-2 w-full bg-white rounded-lg shadow-lg border border-gray-200 max-h-96 overflow-auto">
+                     @click.away="$store.dropdowns.closeAll()"
+                     class="absolute z-50 mt-2 w-full bg-white rounded-lg shadow-lg border border-gray-200 max-h-96 overflow-auto"
+                     x-data="globalSearch()">
                     
                     {{-- Loading State --}}
                     <div x-show="isLoading" class="px-4 py-3 text-sm text-gray-500 flex items-center">
@@ -166,7 +169,7 @@
                     </div>
 
                     {{-- No Results --}}
-                    <div x-show="!isLoading && searchQuery.length > 0 && searchResults.length === 0"
+                    <div x-show="!isLoading && searchQuery.length >= 2 && searchResults.length === 0"
                          class="px-4 py-8 text-center">
                         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -191,24 +194,25 @@
             </button>
 
             {{-- Quick Add Dropdown --}}
-            <div x-data="{ open: false }" class="relative">
-                <button @click="open = !open"
-                        @click.away="open = false"
+            <div class="relative">
+                <button @click="$store.dropdowns.toggle('quickAdd')"
                         class="flex items-center justify-center w-10 h-10 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        :class="{ 'text-blue-600 bg-blue-50': $store.dropdowns.active === 'quickAdd' }"
                         aria-label="Quick add"
-                        :aria-expanded="open">
+                        :aria-expanded="$store.dropdowns.active === 'quickAdd'">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
                 </button>
 
-                <div x-show="open"
+                <div x-show="$store.dropdowns.active === 'quickAdd'"
                      x-transition:enter="transition ease-out duration-200"
                      x-transition:enter-start="opacity-0 scale-95"
                      x-transition:enter-end="opacity-100 scale-100"
                      x-transition:leave="transition ease-in duration-150"
                      x-transition:leave-start="opacity-100 scale-100"
                      x-transition:leave-end="opacity-0 scale-95"
+                     @click.away="$store.dropdowns.closeAll()"
                      class="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
                     
                     <a href="{{ route('admin.products.create') }}" 
@@ -274,6 +278,35 @@
 {{-- Header Component JavaScript --}}
 <script>
 document.addEventListener('alpine:init', () => {
+    // Global dropdown store for managing state across components
+    Alpine.store('dropdowns', {
+        active: null,
+        
+        open(dropdown) {
+            this.active = dropdown;
+        },
+        
+        close() {
+            this.active = null;
+        },
+        
+        closeAll() {
+            this.active = null;
+        },
+        
+        toggle(dropdown) {
+            if (this.active === dropdown) {
+                this.active = null;
+            } else {
+                this.active = dropdown;
+            }
+        },
+        
+        isOpen(dropdown) {
+            return this.active === dropdown;
+        }
+    });
+
     // Main header component
     Alpine.data('headerComponent', () => ({
         mobileMenuOpen: false,
@@ -291,9 +324,22 @@ document.addEventListener('alpine:init', () => {
                     }
                 }
                 
-                // ESC to close mobile search
+                // ESC to close all dropdowns
                 if (e.key === 'Escape') {
+                    this.$store.dropdowns.closeAll();
                     this.showMobileSearch = false;
+                }
+            });
+
+            // Global click handler to close dropdowns when clicking outside
+            document.addEventListener('click', (e) => {
+                // Check if click is outside any dropdown
+                const isDropdownClick = e.target.closest('[x-data*="dropdown"]') || 
+                                      e.target.closest('[data-dropdown]') ||
+                                      e.target.closest('.dropdown-content');
+                
+                if (!isDropdownClick) {
+                    this.$store.dropdowns.closeAll();
                 }
             });
         },
@@ -312,34 +358,33 @@ document.addEventListener('alpine:init', () => {
         searchQuery: '',
         searchResults: [],
         groupedResults: {},
-        showResults: false,
         isLoading: false,
         highlightedIndex: -1,
 
         init() {
             // Watch for search query changes
             this.$watch('searchQuery', (value) => {
-                if (!value.trim()) {
+                if (!value.trim() || value.length < 2) {
                     this.searchResults = [];
                     this.groupedResults = {};
-                    this.showResults = false;
+                    this.$store.dropdowns.close();
                 }
             });
         },
 
         async performSearch() {
-            if (!this.searchQuery.trim()) {
+            if (!this.searchQuery.trim() || this.searchQuery.length < 2) {
                 this.searchResults = [];
                 this.groupedResults = {};
-                this.showResults = false;
+                this.$store.dropdowns.close();
                 return;
             }
 
             this.isLoading = true;
-            this.showResults = true;
+            this.$store.dropdowns.open('search');
 
             try {
-                // Simulated API call - replace with actual endpoint
+                // Try to fetch from actual API endpoint
                 const response = await fetch(`/admin/api/search?q=${encodeURIComponent(this.searchQuery)}`, {
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest',
@@ -350,19 +395,17 @@ document.addEventListener('alpine:init', () => {
                 if (response.ok) {
                     const data = await response.json();
                     this.searchResults = data.results || [];
-                    this.groupedResults = this.groupSearchResults(this.searchResults);
                 } else {
                     // Fallback to mock data for demo
                     this.searchResults = this.getMockSearchResults();
-                    this.groupedResults = this.groupSearchResults(this.searchResults);
                 }
             } catch (error) {
                 console.error('Search error:', error);
                 // Fallback to mock data
                 this.searchResults = this.getMockSearchResults();
-                this.groupedResults = this.groupSearchResults(this.searchResults);
             }
 
+            this.groupedResults = this.groupSearchResults(this.searchResults);
             this.isLoading = false;
             this.highlightedIndex = -1;
         },
@@ -372,30 +415,30 @@ document.addEventListener('alpine:init', () => {
             const mockData = [
                 {
                     type: 'order',
-                    title: `Order #${Math.floor(Math.random() * 10000)}`,
-                    description: 'Recent order by John Doe',
+                    title: `Order #ORD-${Math.floor(Math.random() * 10000)}`,
+                    description: `Customer order containing "${query}"`,
                     url: '/admin/orders/1',
-                    icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M8 11v6h8v-6M8 11h8"></path>',
+                    icon: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M8 11v6h8v-6M8 11h8"></path></svg>',
                     iconBg: 'bg-blue-100 text-blue-600',
                     badge: 'Pending',
                     badgeClass: 'bg-yellow-100 text-yellow-800'
                 },
                 {
                     type: 'product',
-                    title: `Product matching "${query}"`,
-                    description: 'Available in stock',
+                    title: `Product: ${query.charAt(0).toUpperCase() + query.slice(1)} Item`,
+                    description: 'Available in stock - Category: Electronics',
                     url: '/admin/products/1',
-                    icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>',
+                    icon: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>',
                     iconBg: 'bg-green-100 text-green-600',
                     badge: 'In Stock',
                     badgeClass: 'bg-green-100 text-green-800'
                 },
                 {
                     type: 'customer',
-                    title: `Customer with "${query}"`,
+                    title: `Customer: ${query.charAt(0).toUpperCase() + query.slice(1)} User`,
                     description: 'Active customer since 2024',
                     url: '/admin/users/1',
-                    icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>',
+                    icon: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>',
                     iconBg: 'bg-purple-100 text-purple-600',
                     badge: 'Active',
                     badgeClass: 'bg-blue-100 text-blue-800'
@@ -470,8 +513,8 @@ document.addEventListener('alpine:init', () => {
             this.searchQuery = '';
             this.searchResults = [];
             this.groupedResults = {};
-            this.showResults = false;
             this.highlightedIndex = -1;
+            this.$store.dropdowns.close();
         }
     }));
 });

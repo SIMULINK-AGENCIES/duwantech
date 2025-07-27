@@ -1,12 +1,12 @@
 {{-- User Profile Dropdown Component --}}
-<div x-data="userProfileDropdown()" class="relative">
+<div class="relative">
     {{-- Profile Button --}}
-    <button @click="toggleDropdown()"
-            @click.away="showDropdown && closeDropdown()"
+    <button @click="$store.dropdowns.toggle('profile')"
             class="flex items-center space-x-3 p-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            :class="{ 'bg-gray-100': showDropdown }"
+            :class="{ 'bg-gray-100': $store.dropdowns.active === 'profile' }"
             aria-label="User menu"
-            :aria-expanded="showDropdown">
+            :aria-expanded="$store.dropdowns.active === 'profile'"
+            x-data="userProfileDropdown()">
         
         {{-- User Avatar --}}
         <div class="relative">
@@ -35,7 +35,7 @@
         
         {{-- Chevron Icon --}}
         <svg class="w-4 h-4 text-gray-400 transition-transform duration-200"
-             :class="{ 'rotate-180': showDropdown }"
+             :class="{ 'rotate-180': $store.dropdowns.active === 'profile' }"
              fill="none" 
              stroke="currentColor" 
              viewBox="0 0 24 24">
@@ -48,15 +48,16 @@
     </button>
 
     {{-- Dropdown Menu --}}
-    <div x-show="showDropdown"
+    <div x-show="$store.dropdowns.active === 'profile'"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 scale-95 translate-y-1"
          x-transition:enter-end="opacity-100 scale-100 translate-y-0"
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100 scale-100 translate-y-0"
          x-transition:leave-end="opacity-0 scale-95 translate-y-1"
-         class="absolute right-0 top-full mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50"
-         @click.away="closeDropdown()">
+         @click.away="$store.dropdowns.closeAll()"
+         class="absolute right-0 top-full mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-60"
+         x-data="userProfileDropdown()">>>
         
         {{-- User Profile Header --}}
         <div class="px-4 py-3 border-b border-gray-100">
@@ -210,7 +211,6 @@
 <script>
 document.addEventListener('alpine:init', () => {
     Alpine.data('userProfileDropdown', () => ({
-        showDropdown: false,
         user: {},
         stats: {},
         darkMode: false,

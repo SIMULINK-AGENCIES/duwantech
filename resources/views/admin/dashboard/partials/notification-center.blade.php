@@ -1,12 +1,12 @@
 {{-- Real-time Notification Center Component --}}
-<div x-data="notificationCenter()" class="relative">
+<div class="relative">
     {{-- Notification Bell Button --}}
-    <button @click="toggleNotifications()"
-            @click.away="showNotifications && closeNotifications()"
+    <button @click="$store.dropdowns.toggle('notifications')"
             class="relative flex items-center justify-center w-10 h-10 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            :class="{ 'text-blue-600 bg-blue-50': showNotifications }"
+            :class="{ 'text-blue-600 bg-blue-50': $store.dropdowns.active === 'notifications' }"
             aria-label="Notifications"
-            :aria-expanded="showNotifications">
+            :aria-expanded="$store.dropdowns.active === 'notifications'"
+            x-data="notificationCenter()">
         
         {{-- Bell Icon --}}
         <svg class="w-5 h-5" 
@@ -34,15 +34,16 @@
     </button>
 
     {{-- Notification Dropdown Panel --}}
-    <div x-show="showNotifications"
+    <div x-show="$store.dropdowns.active === 'notifications'"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 scale-95 translate-y-1"
          x-transition:enter-end="opacity-100 scale-100 translate-y-0"
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100 scale-100 translate-y-0"
          x-transition:leave-end="opacity-0 scale-95 translate-y-1"
-         class="absolute right-0 top-full mt-2 w-96 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-96 overflow-hidden"
-         @click.away="closeNotifications()">
+         @click.away="$store.dropdowns.closeAll()"
+         class="absolute right-0 top-full mt-2 w-96 bg-white rounded-lg shadow-xl border border-gray-200 z-55 max-h-96 overflow-hidden"
+         x-data="notificationCenter()">
         
         {{-- Header --}}
         <div class="px-4 py-3 border-b border-gray-100 bg-gray-50">
@@ -205,7 +206,6 @@
 <script>
 document.addEventListener('alpine:init', () => {
     Alpine.data('notificationCenter', () => ({
-        showNotifications: false,
         notifications: [],
         unreadCount: 0,
         isLoading: false,
