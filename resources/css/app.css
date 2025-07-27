@@ -5,6 +5,9 @@
 /* Import Professional Enterprise-Grade Navigation Enhancements */
 @import './navigation-premium.css';
 
+/* Import Master Layout Styles */
+@import './admin/master-layout.css';
+
 /* Custom animations for premium admin layout */
 @keyframes gradient-x {
     0%, 100% {

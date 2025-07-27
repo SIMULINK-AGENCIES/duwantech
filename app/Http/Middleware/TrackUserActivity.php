@@ -53,6 +53,11 @@ class TrackUserActivity
                 return;
             }
             
+            // Skip tracking if session is not available (e.g., during testing)
+            if (!$request->hasSession()) {
+                return;
+            }
+            
             $sessionId = $request->session()->getId();
             $user = Auth::user();
             $ipAddress = $request->ip();
@@ -100,8 +105,9 @@ class TrackUserActivity
 
         } catch (\Exception $e) {
             // Log error but don't break the application
+            $sessionId = $request->hasSession() ? $request->session()->getId() : 'no-session';
             \Log::error('Error tracking user activity: ' . $e->getMessage(), [
-                'session_id' => $request->session()->getId(),
+                'session_id' => $sessionId,
                 'user_id' => Auth::id(),
                 'ip_address' => $request->ip(),
                 'url' => $request->fullUrl(),
