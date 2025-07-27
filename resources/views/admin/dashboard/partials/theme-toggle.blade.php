@@ -1,21 +1,28 @@
-{{-- Theme Toggle Component --}}
+{{-- Enhanced Theme Toggle Component - Task 2.4.2 Implementation --}}
 <div x-data="themeToggle()" 
      x-init="init()"
      class="relative">
     
     <!-- Theme Toggle Button -->
-    <button @click="toggleTheme()" 
-            class="btn btn-ghost btn-sm p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-200"
-            :title="currentTheme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'">
+    <button @click="showDropdown = !showDropdown" 
+            class="btn btn-ghost btn-sm p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 relative"
+            :title="getThemeTooltip()"
+            :aria-label="'Current theme: ' + getThemeLabel(currentTheme) + '. Click to change theme.'">
+        
+        <!-- Theme Indicator Badge -->
+        <div class="absolute -top-1 -right-1 w-3 h-3 rounded-full flex items-center justify-center text-xs font-bold"
+             :class="getIndicatorClasses()"
+             x-text="getThemeIndicator()">
+        </div>
         
         <!-- Light Mode Icon -->
-        <svg x-show="currentTheme === 'light'" 
+        <svg x-show="getResolvedTheme() === 'light'" 
              x-transition:enter="transition ease-in-out duration-200"
-             x-transition:enter-start="opacity-0 scale-50"
-             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:enter-start="opacity-0 scale-50 rotate-180"
+             x-transition:enter-end="opacity-100 scale-100 rotate-0"
              x-transition:leave="transition ease-in-out duration-200" 
-             x-transition:leave-start="opacity-100 scale-100"
-             x-transition:leave-end="opacity-0 scale-50"
+             x-transition:leave-start="opacity-100 scale-100 rotate-0"
+             x-transition:leave-end="opacity-0 scale-50 rotate-180"
              class="w-5 h-5 text-yellow-500" 
              fill="currentColor" 
              viewBox="0 0 24 24">
@@ -23,31 +30,17 @@
         </svg>
 
         <!-- Dark Mode Icon -->
-        <svg x-show="currentTheme === 'dark'" 
+        <svg x-show="getResolvedTheme() === 'dark'" 
              x-transition:enter="transition ease-in-out duration-200"
-             x-transition:enter-start="opacity-0 scale-50"
-             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:enter-start="opacity-0 scale-50 rotate-180"
+             x-transition:enter-end="opacity-100 scale-100 rotate-0"
              x-transition:leave="transition ease-in-out duration-200"
-             x-transition:leave-start="opacity-100 scale-100"
-             x-transition:leave-end="opacity-0 scale-50"
+             x-transition:leave-start="opacity-100 scale-100 rotate-0"
+             x-transition:leave-end="opacity-0 scale-50 rotate-180"
              class="w-5 h-5 text-blue-400" 
              fill="currentColor" 
              viewBox="0 0 24 24">
             <path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z" clip-rule="evenodd"/>
-        </svg>
-
-        <!-- System Mode Icon -->
-        <svg x-show="currentTheme === 'system'" 
-             x-transition:enter="transition ease-in-out duration-200"
-             x-transition:enter-start="opacity-0 scale-50"
-             x-transition:enter-end="opacity-100 scale-100"
-             x-transition:leave="transition ease-in-out duration-200"
-             x-transition:leave-start="opacity-100 scale-100"
-             x-transition:leave-end="opacity-0 scale-50"
-             class="w-5 h-5 text-gray-500" 
-             fill="currentColor" 
-             viewBox="0 0 24 24">
-            <path fill-rule="evenodd" d="M2.25 6a3 3 0 013-3h13.5a3 3 0 013 3v12a3 3 0 01-3 3H5.25a3 3 0 01-3-3V6zm3.97.97a.75.75 0 011.06 0l2.25 2.25a.75.75 0 010 1.06l-2.25 2.25a.75.75 0 01-1.06-1.06l1.72-1.72-1.72-1.72a.75.75 0 010-1.06zm4.28 4.28a.75.75 0 000 1.5h3a.75.75 0 000-1.5h-3z" clip-rule="evenodd"/>
         </svg>
     </button>
 
@@ -109,67 +102,126 @@ function themeToggle() {
         currentTheme: 'system',
         showDropdown: false,
         systemPreference: 'light',
+        isTransitioning: false,
+        lastChanged: null,
 
         init() {
             // Get stored theme preference or default to system
             this.currentTheme = localStorage.getItem('theme') || 'system';
             
-            // Detect system preference
+            // Detect initial system preference
             this.systemPreference = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
             
-            // Listen for system theme changes
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-                this.systemPreference = e.matches ? 'dark' : 'light';
+            // Listen for system theme changes with enhanced detection
+            const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            darkModeQuery.addEventListener('change', (e) => {
+                const newPreference = e.matches ? 'dark' : 'light';
+                console.log('System theme changed to:', newPreference);
+                
+                this.systemPreference = newPreference;
+                
+                // If using system theme, apply the change immediately
                 if (this.currentTheme === 'system') {
+                    this.applyTheme();
+                    this.notifyThemeChange('System preference changed');
+                }
+            });
+
+            // Listen for storage changes from other tabs/windows
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'theme' && e.newValue !== this.currentTheme) {
+                    console.log('Theme changed in another tab:', e.newValue);
+                    this.currentTheme = e.newValue || 'system';
                     this.applyTheme();
                 }
             });
 
             // Apply initial theme
             this.applyTheme();
+            
+            // Mark as ready
+            this.lastChanged = new Date();
+            console.log('Theme toggle initialized with theme:', this.currentTheme);
         },
 
         toggleTheme() {
-            // Cycle through themes: light -> dark -> system -> light...
-            const themes = ['light', 'dark', 'system'];
-            const currentIndex = themes.indexOf(this.currentTheme);
-            const nextIndex = (currentIndex + 1) % themes.length;
-            this.setTheme(themes[nextIndex]);
+            // Quick toggle between light and dark (excludes system for faster switching)
+            if (this.currentTheme === 'light') {
+                this.setTheme('dark');
+            } else if (this.currentTheme === 'dark') {
+                this.setTheme('system');
+            } else {
+                this.setTheme('light');
+            }
         },
 
         setTheme(theme) {
+            if (this.isTransitioning) return; // Prevent rapid changes
+            
+            this.isTransitioning = true;
             this.currentTheme = theme;
             this.showDropdown = false;
+            this.lastChanged = new Date();
             
-            // Store preference
-            localStorage.setItem('theme', theme);
+            // Store preference with error handling
+            try {
+                localStorage.setItem('theme', theme);
+                localStorage.setItem('theme-changed-at', this.lastChanged.toISOString());
+            } catch (error) {
+                console.warn('Failed to save theme preference:', error);
+            }
             
-            // Apply theme
+            // Apply theme with transition
             this.applyTheme();
             
-            // Dispatch theme change event for other components
-            window.dispatchEvent(new CustomEvent('theme-changed', { 
-                detail: { 
-                    theme: theme,
-                    resolvedTheme: this.getResolvedTheme()
-                } 
-            }));
+            // Notify other components
+            this.notifyThemeChange('User changed theme');
+            
+            // Reset transition flag
+            setTimeout(() => {
+                this.isTransitioning = false;
+            }, 300);
         },
 
         applyTheme() {
             const resolvedTheme = this.getResolvedTheme();
             const htmlElement = document.documentElement;
             
+            console.log(`Applying theme: ${this.currentTheme} (resolved: ${resolvedTheme})`);
+            
+            // Add animation classes
+            htmlElement.classList.add('theme-transitioning', 'theme-will-change');
+            
+            // Add switching animation to body
+            document.body.classList.add('theme-switch-animation', 'switching');
+            
             // Remove existing theme classes
             htmlElement.classList.remove('light', 'dark');
             htmlElement.removeAttribute('data-theme');
             
-            // Apply new theme
-            htmlElement.classList.add(resolvedTheme);
-            htmlElement.setAttribute('data-theme', resolvedTheme);
+            // Apply new theme with transition delay
+            setTimeout(() => {
+                htmlElement.classList.add(resolvedTheme);
+                htmlElement.setAttribute('data-theme', resolvedTheme);
+                
+                // Update meta theme-color for mobile browsers
+                this.updateMetaThemeColor(resolvedTheme);
+                
+                // Update CSS custom properties for enhanced theming
+                this.updateThemeProperties(resolvedTheme);
+            }, 50);
             
-            // Update meta theme-color for mobile browsers
-            this.updateMetaThemeColor(resolvedTheme);
+            // Remove animation classes after transition
+            setTimeout(() => {
+                htmlElement.classList.remove('theme-transitioning', 'theme-will-change');
+                document.body.classList.remove('theme-switch-animation', 'switching');
+                htmlElement.classList.add('theme-animation-complete');
+                
+                // Clean up performance class
+                setTimeout(() => {
+                    htmlElement.classList.remove('theme-animation-complete');
+                }, 100);
+            }, 350);
         },
 
         getResolvedTheme() {
@@ -187,14 +239,120 @@ function themeToggle() {
                 document.head.appendChild(themeColorMeta);
             }
             
-            // Set appropriate theme color based on theme
+            // Enhanced theme colors matching our design system
             const themeColors = {
-                light: '#ffffff',
-                dark: '#1f2937'
+                light: getComputedStyle(document.documentElement).getPropertyValue('--bg-primary') || '#ffffff',
+                dark: getComputedStyle(document.documentElement).getPropertyValue('--bg-secondary') || '#1f2937'
             };
             
             themeColorMeta.content = themeColors[theme] || themeColors.light;
+        },
+
+        updateThemeProperties(theme) {
+            // Update any additional CSS properties based on theme
+            const root = document.documentElement;
+            
+            if (theme === 'dark') {
+                root.style.setProperty('--scroll-behavior', 'smooth');
+                root.style.setProperty('--selection-bg', 'rgba(59, 130, 246, 0.3)');
+            } else {
+                root.style.setProperty('--scroll-behavior', 'smooth');
+                root.style.setProperty('--selection-bg', 'rgba(59, 130, 246, 0.2)');
+            }
+        },
+
+        notifyThemeChange(reason = 'Theme changed') {
+            // Dispatch enhanced theme change event
+            window.dispatchEvent(new CustomEvent('theme-changed', { 
+                detail: { 
+                    theme: this.currentTheme,
+                    resolvedTheme: this.getResolvedTheme(),
+                    systemPreference: this.systemPreference,
+                    timestamp: this.lastChanged,
+                    reason: reason
+                } 
+            }));
+            
+            // Also dispatch to any theme-aware components
+            document.querySelectorAll('[data-theme-aware]').forEach(element => {
+                element.dispatchEvent(new CustomEvent('theme-update', {
+                    detail: { theme: this.getResolvedTheme() }
+                }));
+            });
+        },
+
+        // Helper methods for enhanced UI
+        getThemeLabel(theme) {
+            const labels = {
+                light: 'Light Mode',
+                dark: 'Dark Mode', 
+                system: 'System Default'
+            };
+            return labels[theme] || 'Unknown';
+        },
+
+        getThemeTooltip() {
+            const resolved = this.getResolvedTheme();
+            if (this.currentTheme === 'system') {
+                return `System theme (currently ${resolved}). Click to change theme.`;
+            }
+            return `${this.getThemeLabel(this.currentTheme)}. Click to change theme.`;
+        },
+
+        getThemeIndicator() {
+            const indicators = {
+                light: 'L',
+                dark: 'D',
+                system: 'S'
+            };
+            return indicators[this.currentTheme] || '?';
+        },
+
+        getIndicatorClasses() {
+            const classes = {
+                light: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+                dark: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+                system: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+            };
+            return classes[this.currentTheme] || classes.system;
+        },
+
+        // Keyboard support
+        handleKeydown(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                this.showDropdown = !this.showDropdown;
+            } else if (event.key === 'Escape') {
+                this.showDropdown = false;
+            }
+        },
+
+        // Debug method for development
+        getThemeInfo() {
+            return {
+                current: this.currentTheme,
+                resolved: this.getResolvedTheme(),
+                system: this.systemPreference,
+                lastChanged: this.lastChanged,
+                isTransitioning: this.isTransitioning
+            };
         }
     }
 }
+
+// Global theme utilities
+window.themeUtils = {
+    getCurrentTheme() {
+        return localStorage.getItem('theme') || 'system';
+    },
+    
+    setTheme(theme) {
+        const event = new CustomEvent('set-theme', { detail: { theme } });
+        window.dispatchEvent(event);
+    },
+    
+    getSystemPreference() {
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+};
 </script>

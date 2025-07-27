@@ -157,6 +157,29 @@
             // Apply theme immediately to prevent FOUC
             document.documentElement.classList.add(resolvedTheme);
             document.documentElement.setAttribute('data-theme', resolvedTheme);
+            
+            // Loading screen management - more robust approach
+            function hideLoadingScreen() {
+                const loadingScreen = document.getElementById('loading-screen');
+                if (loadingScreen) {
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }
+            }
+            
+            // Hide loading screen after DOM is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(hideLoadingScreen, 100);
+                });
+            } else {
+                setTimeout(hideLoadingScreen, 100);
+            }
+            
+            // Emergency fallback
+            setTimeout(hideLoadingScreen, 2000);
         })();
     </script>
     
@@ -165,15 +188,12 @@
     
     <!-- Loading Screen -->
     <div id="loading-screen" 
-         class="fixed inset-0 bg-white z-50 flex items-center justify-center transition-opacity duration-500"
-         x-show="loading" 
-         x-transition:leave="transition-opacity duration-500"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         style="display: flex;">
+         class="fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-500 theme-transition"
+         style="background-color: var(--bg-primary);">
         <div class="text-center">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p class="text-gray-600 text-sm">Loading Dashboard...</p>
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" 
+                 style="border-color: var(--color-primary-600);"></div>
+            <p class="text-sm" style="color: var(--text-secondary);">Loading Dashboard...</p>
         </div>
     </div>
     
@@ -261,57 +281,19 @@
     <!-- Scripts -->
     @vite(['resources/js/app.js'])
     
-    <!-- Fallback Loading Screen Handler -->
-    <script>
-        // Fallback to hide loading screen if Alpine.js fails
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded, setting up loading screen fallbacks');
-            
-            setTimeout(function() {
-                const loadingScreen = document.getElementById('loading-screen');
-                if (loadingScreen && (loadingScreen.style.display !== 'none' && !loadingScreen.hidden)) {
-                    console.log('Hiding loading screen via fallback - DOMContentLoaded');
-                    loadingScreen.style.display = 'none';
-                    loadingScreen.hidden = true;
-                }
-            }, 1500);
-        });
-        
-        // Emergency fallback - hide after page load
-        window.addEventListener('load', function() {
-            console.log('Window loaded, checking loading screen');
-            
-            setTimeout(function() {
-                const loadingScreen = document.getElementById('loading-screen');
-                if (loadingScreen) {
-                    console.log('Hiding loading screen via fallback - window load');
-                    loadingScreen.style.display = 'none';
-                    loadingScreen.hidden = true;
-                }
-            }, 500);
-        });
-        
-        // Immediate fallback for really bad cases
-        setTimeout(function() {
-            const loadingScreen = document.getElementById('loading-screen');
-            if (loadingScreen) {
-                console.log('Emergency fallback - hiding loading screen');
-                loadingScreen.style.display = 'none';
-                loadingScreen.hidden = true;
-            }
-        }, 3000);
-    </script>
+    @stack('scripts')
     
     <!-- Enhanced Dashboard Layout Alpine.js Component -->
     <script>
         function dashboardLayout() {
             return {
-                loading: true,
                 sidebarOpen: false,
                 sidebarCollapsed: Alpine.$persist(false).as('sidebar-collapsed'),
                 isMobile: false,
                 
                 init() {
+                    console.log('Dashboard layout initializing...');
+                    
                     // Initialize responsive behavior
                     this.checkIsMobile();
                     this.initializeLayout();
@@ -330,43 +312,43 @@
                     });
                     
                     // Initialize Alpine store for cross-component communication
-                    Alpine.store('sidebar', {
-                        mobileOpen: this.sidebarOpen,
-                        collapsed: this.sidebarCollapsed
-                    });
-                    
-                    // Remove loading screen after initialization
-                    // Add multiple fallbacks to ensure loading screen is hidden
-                    const hideLoading = () => {
-                        this.loading = false;
-                        console.log('Loading screen hidden at:', new Date().toISOString());
-                    };
-                    
-                    // Primary timeout - fast for good UX
-                    setTimeout(hideLoading, 300);
-                    
-                    // Fallback timeouts in case the first one fails
-                    setTimeout(hideLoading, 1000);
-                    setTimeout(hideLoading, 2000);
-                    
-                    // Emergency timeout - should never be needed
-                    setTimeout(() => {
-                        this.loading = false;
-                        console.warn('Emergency loading screen timeout triggered');
-                    }, 3000);
-                    
-                    // Immediate fallback for debugging
-                    requestAnimationFrame(hideLoading);
-                    
-                    // Force hide on DOMContentLoaded if still showing
-                    if (document.readyState === 'loading') {
-                        document.addEventListener('DOMContentLoaded', hideLoading);
-                    } else {
-                        hideLoading();
+                    if (!Alpine.store('sidebar')) {
+                        Alpine.store('sidebar', {
+                            mobileOpen: this.sidebarOpen,
+                            collapsed: this.sidebarCollapsed
+                        });
                     }
                     
-                    // Additional fallback on window load
-                    window.addEventListener('load', hideLoading);
+                    // Initialize dropdowns store if not exists
+                    if (!Alpine.store('dropdowns')) {
+                        Alpine.store('dropdowns', {
+                            active: null,
+                            
+                            open(dropdown) {
+                                this.active = dropdown;
+                            },
+                            
+                            close() {
+                                this.active = null;
+                            },
+                            
+                            closeAll() {
+                                this.active = null;
+                            },
+                            
+                            toggle(dropdown) {
+                                if (this.active === dropdown) {
+                                    this.active = null;
+                                } else {
+                                    this.active = dropdown;
+                                }
+                            },
+                            
+                            isOpen(dropdown) {
+                                return this.active === dropdown;
+                            }
+                        });
+                    }
                 },
                 
                 checkIsMobile() {

@@ -1,6 +1,9 @@
 /* Import Theme System First */
 @import './admin/theme-system.css';
 @import './admin/theme-components.css';
+@import './admin/theme-configuration.css';
+@import './admin/theme-animations.css';
+@import './admin/theme-toggle-enhancements.css';
 @import './navigation-premium.css';
 @import './admin/master-layout.css';
 
