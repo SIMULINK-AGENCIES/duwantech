@@ -48,6 +48,11 @@ class TrackUserActivity
     protected function trackActivity(Request $request): void
     {
         try {
+            // Skip tracking for API routes as they don't have sessions
+            if ($request->is('api/*')) {
+                return;
+            }
+            
             $sessionId = $request->session()->getId();
             $user = Auth::user();
             $ipAddress = $request->ip();
@@ -67,7 +72,7 @@ class TrackUserActivity
                     'session_id' => $sessionId,
                     'ip_address' => $ipAddress,
                     'user_agent' => $userAgent,
-                    'location' => $locationData,
+                    'location_data' => json_encode($locationData),
                     'page_url' => $pageUrl,
                     'last_activity' => now(),
                 ]);

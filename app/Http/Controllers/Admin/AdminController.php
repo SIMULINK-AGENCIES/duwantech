@@ -15,15 +15,38 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
+        $dashboardService = app(\App\Services\DashboardService::class);
+        $metrics = $dashboardService->getRealTimeMetrics();
+        
         // Get dashboard statistics
         $stats = [
-            'total_orders' => Order::count(),
-            'total_products' => Product::count(),
-            'total_users' => User::count(),
-            'total_categories' => Category::count(),
-            'pending_orders' => Order::where('status', 'pending')->count(),
-            'completed_orders' => Order::where('status', 'completed')->count(),
-            'total_revenue' => Order::where('status', 'completed')->sum('amount'),
+            'total_orders' => $metrics['overview']['total_orders'],
+            'total_products' => $metrics['overview']['total_products'],
+            'total_users' => $metrics['overview']['total_users'],
+            'total_categories' => $metrics['overview']['total_categories'],
+            'pending_orders' => $metrics['orders']['pending'],
+            'completed_orders' => $metrics['orders']['delivered'],
+            'total_revenue' => $metrics['revenue']['total'],
+        ];
+
+        // Quick stats for widgets
+        $quickStats = [
+            'orders' => [
+                'today' => $metrics['orders']['today'],
+                'change' => $metrics['orders']['daily_change'],
+            ],
+            'revenue' => [
+                'today' => $metrics['sales']['today'],
+                'change' => $metrics['sales']['daily_change'],
+            ],
+            'users' => [
+                'today' => $metrics['users']['new_today'],
+                'change' => $metrics['users']['daily_change'],
+            ],
+            'alerts' => [
+                'total' => $metrics['alerts']['unread_count'],
+                'critical' => $metrics['alerts']['critical_count'],
+            ],
         ];
 
         // Get recent orders
@@ -46,7 +69,13 @@ class AdminController extends Controller
             ->orderBy('month')
             ->get();
 
-        return view('admin.dashboard', compact('stats', 'recentOrders', 'topProducts', 'monthlyRevenue'));
+        return view('admin.dashboard', compact(
+            'stats', 
+            'quickStats', 
+            'recentOrders', 
+            'topProducts', 
+            'monthlyRevenue'
+        ));
     }
 
     public function settings()

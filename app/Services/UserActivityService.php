@@ -6,6 +6,7 @@ use App\Models\ActiveSession;
 use App\Models\ActivityLog;
 use App\Models\User;
 use App\Events\UserOfflineEvent;
+use App\Services\GeolocationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
@@ -14,58 +15,19 @@ use Carbon\Carbon;
 
 class UserActivityService
 {
+    protected $geolocationService;
+
+    public function __construct(GeolocationService $geolocationService)
+    {
+        $this->geolocationService = $geolocationService;
+    }
+
     /**
-     * Get location data from IP address using ipapi.co service.
+     * Get location data from IP address using GeolocationService.
      */
     public function getLocationData(string $ipAddress): ?array
     {
-        // Skip for localhost/private IPs
-        if ($this->isPrivateIp($ipAddress)) {
-            return [
-                'country' => 'Local',
-                'city' => 'Development',
-                'lat' => null,
-                'lng' => null,
-                'timezone' => config('app.timezone'),
-            ];
-        }
-
-        // Cache location data for 24 hours to avoid excessive API calls
-        $cacheKey = "location_data_{$ipAddress}";
-        
-        return Cache::remember($cacheKey, 86400, function () use ($ipAddress) {
-            try {
-                $response = Http::timeout(5)->get("http://ipapi.co/{$ipAddress}/json/");
-                
-                if ($response->successful()) {
-                    $data = $response->json();
-                    
-                    return [
-                        'country' => $data['country_name'] ?? 'Unknown',
-                        'city' => $data['city'] ?? 'Unknown',
-                        'lat' => $data['latitude'] ?? null,
-                        'lng' => $data['longitude'] ?? null,
-                        'timezone' => $data['timezone'] ?? config('app.timezone'),
-                        'region' => $data['region'] ?? null,
-                        'postal' => $data['postal'] ?? null,
-                        'country_code' => $data['country_code'] ?? null,
-                    ];
-                }
-            } catch (\Exception $e) {
-                Log::warning('Failed to get location data for IP: ' . $ipAddress, [
-                    'error' => $e->getMessage()
-                ]);
-            }
-
-            // Return default data if API call fails
-            return [
-                'country' => 'Unknown',
-                'city' => 'Unknown',
-                'lat' => null,
-                'lng' => null,
-                'timezone' => config('app.timezone'),
-            ];
-        });
+        return $this->geolocationService->getLocationData($ipAddress);
     }
 
     /**

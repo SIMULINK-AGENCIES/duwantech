@@ -13,3 +13,16 @@ Schedule::command('sessions:cleanup')->everyFifteenMinutes();
 
 // Schedule daily cleanup with more aggressive settings
 Schedule::command('sessions:cleanup --minutes=60')->daily();
+
+// Performance monitoring and optimization schedule
+Schedule::command('performance:monitor --stats')->everyTenMinutes()
+    ->withoutOverlapping()
+    ->runInBackground();
+
+Schedule::command('performance:monitor --optimize')->hourly()
+    ->withoutOverlapping()
+    ->runInBackground();
+
+Schedule::command('performance:monitor --warmup')->daily()
+    ->at('01:00')
+    ->runInBackground();

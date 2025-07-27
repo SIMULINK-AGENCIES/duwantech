@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ActivityController;
 use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Admin\PerformanceController;
+use App\Http\Controllers\Admin\ReportsController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -94,4 +96,36 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::delete('profile/avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.avatar.delete');
     Route::get('profile/export', [ProfileController::class, 'exportData'])->name('profile.export');
     Route::get('profile/activity', [ProfileController::class, 'getActivityLog'])->name('profile.activity');
+    
+    // Performance Monitoring Routes
+    Route::prefix('performance')->name('performance.')->group(function () {
+        Route::get('/', [PerformanceController::class, 'index'])->name('index');
+        Route::get('metrics', [PerformanceController::class, 'getMetrics'])->name('metrics');
+        Route::get('database', [PerformanceController::class, 'getDatabaseMetrics'])->name('database');
+        Route::get('cache', [PerformanceController::class, 'getCacheMetrics'])->name('cache');
+        Route::get('queue', [PerformanceController::class, 'getQueueMetrics'])->name('queue');
+        Route::get('health', [PerformanceController::class, 'getHealthStatus'])->name('health');
+        Route::get('health/summary', [PerformanceController::class, 'getHealthSummary'])->name('health.summary');
+        Route::post('optimize-cache', [PerformanceController::class, 'optimizeCache'])->name('optimize-cache');
+        Route::post('optimize-queues', [PerformanceController::class, 'optimizeQueues'])->name('optimize-queues');
+        Route::post('clear-cache', [PerformanceController::class, 'clearCache'])->name('clear-cache');
+        Route::post('warmup-cache', [PerformanceController::class, 'warmupCache'])->name('warmup-cache');
+        Route::post('migrate', [PerformanceController::class, 'runMigrations'])->name('migrate');
+    });
+    
+    // Reports Routes
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('/', [ReportsController::class, 'index'])->name('index');
+        Route::get('revenue', [ReportsController::class, 'revenue'])->name('revenue');
+        Route::get('sales', [ReportsController::class, 'sales'])->name('sales');
+        Route::get('customers', [ReportsController::class, 'customers'])->name('customers');
+        Route::get('products', [ReportsController::class, 'products'])->name('products');
+        
+        // API endpoints for reports data
+        Route::get('api/revenue', [ReportsController::class, 'getRevenueApi'])->name('api.revenue');
+        Route::get('api/sales', [ReportsController::class, 'getSalesApi'])->name('api.sales');
+        
+        // Export endpoints  
+        Route::get('export/revenue', [ReportsController::class, 'exportRevenue'])->name('export.revenue');
+    });
 });
