@@ -1,6 +1,7 @@
 {{-- Enhanced Top Header Component --}}
-<header class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-30"
-        x-data="headerComponent()">
+<header class="sticky top-0 z-30 border-b shadow-sm theme-transition"
+        style="background-color: var(--bg-secondary); border-color: var(--border-primary);"
+        x-data="headerComponent()">>
     
     <div class="flex items-center justify-between px-4 py-3 lg:px-6">
         
@@ -240,6 +241,9 @@
                     </a>
                 </div>
             </div>
+
+            {{-- Theme Toggle --}}
+            @include('admin.dashboard.partials.theme-toggle')
 
             {{-- Notifications Center --}}
             @include('admin.dashboard.partials.notification-center')

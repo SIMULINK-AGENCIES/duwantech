@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full theme-transition">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#ffffff">
     
     <title>@yield('title', config('app.name') . ' - Admin Dashboard')</title>
     
@@ -136,7 +137,29 @@
     @stack('styles')
 </head>
 
-<body class="h-full bg-gray-50 font-inter antialiased" x-data="dashboardLayout()" x-init="init()">
+<body class="h-full font-inter antialiased theme-transition" 
+      style="background-color: var(--bg-primary); color: var(--text-primary);"
+      x-data="dashboardLayout()" 
+      x-init="init()">
+    
+    <!-- Theme Initialization Script (prevents FOUC) -->
+    <script>
+        (function() {
+            // Get stored theme preference or default to system
+            const storedTheme = localStorage.getItem('theme') || 'system';
+            
+            // Detect system preference
+            const systemPreference = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            
+            // Resolve actual theme
+            const resolvedTheme = storedTheme === 'system' ? systemPreference : storedTheme;
+            
+            // Apply theme immediately to prevent FOUC
+            document.documentElement.classList.add(resolvedTheme);
+            document.documentElement.setAttribute('data-theme', resolvedTheme);
+        })();
+    </script>
+    
     <!-- Skip Navigation Link for Accessibility -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
     

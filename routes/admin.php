@@ -39,6 +39,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::post('settings', [SettingsController::class, 'update'])->name('settings.update');
     
+    // Theme Settings
+    Route::get('settings/theme', function () {
+        return view('admin.settings.theme');
+    })->name('settings.theme');
+    
     // General Settings (Frontend Control)
     Route::get('frontend', [GeneralSettingsController::class, 'index'])->name('frontend.index');
     Route::put('frontend', [GeneralSettingsController::class, 'update'])->name('frontend.update');

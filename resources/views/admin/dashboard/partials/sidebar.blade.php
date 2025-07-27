@@ -1,7 +1,8 @@
 {{-- Enhanced Sidebar Navigation Component --}}
 <aside id="enhanced-sidebar" 
        x-data="sidebarNavigation()" 
-       class="fixed inset-y-0 left-0 z-50 flex flex-col bg-white border-r border-gray-200 shadow-lg transition-all duration-300 ease-in-out"
+       class="fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out theme-transition border-r shadow-lg"
+       style="background-color: var(--bg-secondary); border-color: var(--border-primary);"
        :class="{
            'w-64': !collapsed,
            'w-16': collapsed,
@@ -21,12 +22,14 @@
          x-transition:leave="transition-opacity ease-linear duration-300"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
-         class="fixed inset-0 bg-gray-600 bg-opacity-75 lg:hidden"
+         class="fixed inset-0 lg:hidden"
+         style="background-color: var(--bg-overlay);"
          aria-hidden="true"
          @click="mobileOpen = false"></div>
 
     {{-- Sidebar Header --}}
-    <div class="flex items-center justify-between px-4 py-4 border-b border-gray-200">
+    <div class="flex items-center justify-between px-4 py-4 border-b" 
+         style="border-color: var(--border-primary);">
         <div class="flex items-center space-x-3" :class="{ 'justify-center': collapsed }">
             {{-- Logo --}}
             <div class="flex-shrink-0">
@@ -45,8 +48,8 @@
                  x-transition:leave-start="opacity-100"
                  x-transition:leave-end="opacity-0"
                  class="flex flex-col">
-                <h1 class="text-lg font-bold text-gray-900">Admin Panel</h1>
-                <p class="text-xs text-gray-500">E-Commerce</p>
+                <h1 class="text-lg font-bold" style="color: var(--text-primary);">Admin Panel</h1>
+                <p class="text-xs" style="color: var(--text-tertiary);">E-Commerce</p>
             </div>
         </div>
 
