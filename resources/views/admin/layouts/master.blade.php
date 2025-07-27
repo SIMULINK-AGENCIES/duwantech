@@ -159,139 +159,22 @@
          :class="{ 'sidebar-collapsed': sidebarCollapsed }"
          x-cloak>
         
-        <!-- Sidebar -->
-        <aside id="sidebar" 
-               class="sidebar fixed inset-y-0 left-0 z-40 flex flex-col transition-all duration-300 ease-in-out bg-white border-r border-gray-200 shadow-sm"
-               :class="{ 
-                   'w-64': !sidebarCollapsed, 
-                   'w-16': sidebarCollapsed,
-                   '-translate-x-full': !sidebarOpen && isMobile,
-                   'translate-x-0': sidebarOpen || !isMobile
-               }"
-               role="navigation"
-               aria-label="Main navigation">
-            
-            <!-- Sidebar Header -->
-            <div class="flex items-center justify-between h-16 px-4 border-b border-gray-200">
-                <div class="flex items-center space-x-3" :class="{ 'justify-center': sidebarCollapsed }">
-                    <!-- Logo placeholder until assets are available -->
-                    <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center flex-shrink-0">
-                        <span class="text-white font-bold text-xs">D</span>
-                    </div>
-                    <span class="font-semibold text-gray-900 transition-opacity duration-300"
-                          :class="{ 'opacity-0 hidden': sidebarCollapsed }"
-                          x-show="!sidebarCollapsed"
-                          x-transition>
-                        {{ config('app.name') }}
-                    </span>
-                </div>
-                
-                <!-- Sidebar Toggle (Desktop) -->
-                <button @click="toggleSidebar()" 
-                        class="p-1.5 rounded-md hover:bg-gray-100 transition-colors duration-200 hidden lg:block"
-                        :class="{ 'hidden': sidebarCollapsed }"
-                        aria-label="Toggle sidebar"
-                        tabindex="0">
-                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path>
-                    </svg>
-                </button>
-            </div>
-            
-            <!-- Sidebar Navigation -->
-            <nav class="flex-1 overflow-y-auto py-4" aria-label="Sidebar navigation">
-                <!-- Simple Navigation for now -->
-                <div class="px-4">
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center px-3 py-2 text-sm font-medium text-gray-900 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" tabindex="0">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
-                        </svg>
-                        Dashboard
-                    </a>
-                </div>
-            </nav>
-            
-            <!-- Sidebar Footer -->
-            <div class="border-t border-gray-200 p-4">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-gray-500">
-                            <span class="text-xs font-medium leading-none text-white">A</span>
-                        </span>
-                    </div>
-                    <div class="ml-3">
-                        <p class="text-sm font-medium text-gray-700">Admin User</p>
-                    </div>
-                </div>
-            </div>
-        </aside>
-        
-        <!-- Mobile Sidebar Overlay -->
-        <div class="fixed inset-0 z-30 lg:hidden" 
-             x-show="sidebarOpen && isMobile" 
-             x-transition:enter="transition-opacity ease-linear duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="transition-opacity ease-linear duration-300"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             @click="closeSidebar()">
-            <div class="absolute inset-0 bg-gray-600 opacity-75"></div>
-        </div>
+        <!-- Enhanced Sidebar Component -->
+        @include('admin.dashboard.partials.sidebar')
+
+        <!-- Mobile Navigation Component -->
+        @include('admin.dashboard.partials.mobile-navigation')
         
         <!-- Main Content Area -->
-        <div class="flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out"
+        <div class="flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out lg:pt-0 pt-16"
              :class="{ 
-                 'ml-64': !sidebarCollapsed && !isMobile, 
-                 'ml-16': sidebarCollapsed && !isMobile,
+                 'lg:ml-64': !sidebarCollapsed && !isMobile, 
+                 'lg:ml-16': sidebarCollapsed && !isMobile,
                  'ml-0': isMobile 
              }">
             
-            <!-- Top Header -->
-            <header class="sticky top-0 z-20 bg-white border-b border-gray-200 shadow-sm main-header"
-                    role="banner">
-                <div class="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
-                    
-                    <!-- Mobile Menu Button -->
-                    <button @click="toggleSidebar()" 
-                            class="p-2 rounded-md hover:bg-gray-100 transition-colors duration-200 lg:hidden focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            aria-label="Open sidebar"
-                            tabindex="0">
-                        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                    </button>
-                    
-                    <!-- Desktop Sidebar Toggle -->
-                    <button @click="toggleSidebar()" 
-                            class="p-2 rounded-md hover:bg-gray-100 transition-colors duration-200 hidden lg:block focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            :class="{ 'block': sidebarCollapsed }"
-                            x-show="sidebarCollapsed"
-                            aria-label="Expand sidebar"
-                            tabindex="0">
-                        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path>
-                        </svg>
-                    </button>
-                    
-                    <!-- Page Title -->
-                    <div class="flex-1 px-4">
-                        <h1 class="text-xl font-semibold text-gray-900 truncate" id="page-title">
-                            @yield('title', 'Dashboard')
-                        </h1>
-                    </div>
-                    
-                    <!-- Header Actions -->
-                    <div class="flex items-center space-x-4">
-                        <!-- Simple header actions -->
-                        <button type="button" class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500" tabindex="0">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5-5V9a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2h2"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </header>
+            <!-- Enhanced Header Component -->
+            @include('admin.dashboard.partials.header')
             
             <!-- Main Content -->
             <main id="main-content" 
@@ -396,13 +279,13 @@
         }, 3000);
     </script>
     
-    <!-- Dashboard Layout Alpine.js Component -->
+    <!-- Enhanced Dashboard Layout Alpine.js Component -->
     <script>
         function dashboardLayout() {
             return {
                 loading: true,
                 sidebarOpen: false,
-                sidebarCollapsed: false,
+                sidebarCollapsed: Alpine.$persist(false).as('sidebar-collapsed'),
                 isMobile: false,
                 
                 init() {
@@ -423,18 +306,31 @@
                         }
                     });
                     
+                    // Initialize Alpine store for cross-component communication
+                    Alpine.store('sidebar', {
+                        mobileOpen: this.sidebarOpen,
+                        collapsed: this.sidebarCollapsed
+                    });
+                    
                     // Remove loading screen after initialization
                     // Add multiple fallbacks to ensure loading screen is hidden
                     const hideLoading = () => {
                         this.loading = false;
+                        console.log('Loading screen hidden at:', new Date().toISOString());
                     };
                     
-                    // Primary timeout
+                    // Primary timeout - fast for good UX
                     setTimeout(hideLoading, 300);
                     
                     // Fallback timeouts in case the first one fails
                     setTimeout(hideLoading, 1000);
                     setTimeout(hideLoading, 2000);
+                    
+                    // Emergency timeout - should never be needed
+                    setTimeout(() => {
+                        this.loading = false;
+                        console.warn('Emergency loading screen timeout triggered');
+                    }, 3000);
                     
                     // Immediate fallback for debugging
                     requestAnimationFrame(hideLoading);
@@ -445,6 +341,9 @@
                     } else {
                         hideLoading();
                     }
+                    
+                    // Additional fallback on window load
+                    window.addEventListener('load', hideLoading);
                 },
                 
                 checkIsMobile() {
@@ -452,12 +351,6 @@
                 },
                 
                 initializeLayout() {
-                    // Get saved preferences from localStorage
-                    const savedCollapsed = localStorage.getItem('sidebar-collapsed');
-                    if (savedCollapsed !== null) {
-                        this.sidebarCollapsed = JSON.parse(savedCollapsed);
-                    }
-                    
                     // Auto-collapse on mobile
                     if (this.isMobile) {
                         this.sidebarOpen = false;
@@ -468,35 +361,56 @@
                 toggleSidebar() {
                     if (this.isMobile) {
                         this.sidebarOpen = !this.sidebarOpen;
+                        // Update store
+                        Alpine.store('sidebar').mobileOpen = this.sidebarOpen;
+                        
+                        // Prevent body scrolling when mobile sidebar is open
+                        if (this.sidebarOpen) {
+                            document.body.classList.add('mobile-nav-open');
+                        } else {
+                            document.body.classList.remove('mobile-nav-open');
+                        }
                     } else {
                         this.sidebarCollapsed = !this.sidebarCollapsed;
-                        // Save preference
-                        localStorage.setItem('sidebar-collapsed', JSON.stringify(this.sidebarCollapsed));
+                        // Update store
+                        Alpine.store('sidebar').collapsed = this.sidebarCollapsed;
                     }
                 },
                 
                 closeSidebar() {
                     this.sidebarOpen = false;
+                    Alpine.store('sidebar').mobileOpen = false;
+                    document.body.classList.remove('mobile-nav-open');
                 },
                 
                 handleResize() {
                     // Close mobile sidebar on desktop switch
                     if (!this.isMobile && this.sidebarOpen) {
-                        this.sidebarOpen = false;
+                        this.closeSidebar();
+                    }
+                    
+                    // Reset sidebar state on mobile/desktop switch
+                    if (this.isMobile) {
+                        this.sidebarCollapsed = false;
                     }
                 }
             }
         }
         
-        // Accessibility enhancements
+        // Enhanced Accessibility and Keyboard Navigation
         document.addEventListener('DOMContentLoaded', function() {
             // Add focus management for keyboard navigation
             const focusableElements = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
             
             // Trap focus in mobile sidebar when open
             document.addEventListener('keydown', function(e) {
-                const sidebar = document.getElementById('sidebar');
-                if (e.key === 'Tab' && sidebar && sidebar.classList.contains('translate-x-0')) {
+                const sidebar = document.getElementById('enhanced-sidebar');
+                if (!sidebar) return;
+                
+                const isMobile = window.innerWidth < 1024;
+                const sidebarOpen = !sidebar.classList.contains('-translate-x-full');
+                
+                if (e.key === 'Tab' && isMobile && sidebarOpen) {
                     const focusable = sidebar.querySelectorAll(focusableElements);
                     const firstFocusable = focusable[0];
                     const lastFocusable = focusable[focusable.length - 1];
@@ -514,7 +428,84 @@
                     }
                 }
             });
+            
+            // Enhanced keyboard navigation for sidebar menu items
+            document.addEventListener('keydown', function(e) {
+                if (e.target.closest('#enhanced-sidebar')) {
+                    switch(e.key) {
+                        case 'ArrowDown':
+                            e.preventDefault();
+                            focusNextSidebarItem(e.target);
+                            break;
+                        case 'ArrowUp':
+                            e.preventDefault();
+                            focusPrevSidebarItem(e.target);
+                            break;
+                        case 'Home':
+                            e.preventDefault();
+                            focusFirstSidebarItem();
+                            break;
+                        case 'End':
+                            e.preventDefault();
+                            focusLastSidebarItem();
+                            break;
+                        case 'Enter':
+                        case ' ':
+                            if (e.target.tagName === 'BUTTON') {
+                                e.preventDefault();
+                                e.target.click();
+                            }
+                            break;
+                    }
+                }
+            });
+            
+            function focusNextSidebarItem(currentElement) {
+                const sidebar = document.getElementById('enhanced-sidebar');
+                if (!sidebar) return;
+                
+                const focusableItems = Array.from(sidebar.querySelectorAll('a[tabindex="0"], button[tabindex="0"]'));
+                const currentIndex = focusableItems.indexOf(currentElement);
+                const nextIndex = (currentIndex + 1) % focusableItems.length;
+                focusableItems[nextIndex].focus();
+            }
+            
+            function focusPrevSidebarItem(currentElement) {
+                const sidebar = document.getElementById('enhanced-sidebar');
+                if (!sidebar) return;
+                
+                const focusableItems = Array.from(sidebar.querySelectorAll('a[tabindex="0"], button[tabindex="0"]'));
+                const currentIndex = focusableItems.indexOf(currentElement);
+                const prevIndex = currentIndex === 0 ? focusableItems.length - 1 : currentIndex - 1;
+                focusableItems[prevIndex].focus();
+            }
+            
+            function focusFirstSidebarItem() {
+                const sidebar = document.getElementById('enhanced-sidebar');
+                if (!sidebar) return;
+                
+                const firstItem = sidebar.querySelector('a[tabindex="0"], button[tabindex="0"]');
+                if (firstItem) firstItem.focus();
+            }
+            
+            function focusLastSidebarItem() {
+                const sidebar = document.getElementById('enhanced-sidebar');
+                if (!sidebar) return;
+                
+                const focusableItems = Array.from(sidebar.querySelectorAll('a[tabindex="0"], button[tabindex="0"]'));
+                const lastItem = focusableItems[focusableItems.length - 1];
+                if (lastItem) lastItem.focus();
+            }
         });
+        
+        // Global function for opening mobile sidebar (backwards compatibility)
+        function openMobileSidebar() {
+            const dashboardComponent = Alpine.$data(document.body);
+            if (dashboardComponent) {
+                dashboardComponent.sidebarOpen = true;
+                dashboardComponent.toggleSidebar();
+            }
+        }
     </script>
     
     @stack('scripts')
