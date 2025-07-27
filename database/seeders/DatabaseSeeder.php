@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
             GeneralSettingsSeeder::class,
             MpesaSettingsSeeder::class,
+            DashboardLayoutSeeder::class,
+            DashboardWidgetSeeder::class,
         ]);
     }
 }
