@@ -43,6 +43,7 @@ class User extends Authenticatable
         'api_access_enabled',
         'api_token',
         'api_rate_limit',
+        'dashboard_preferences',
     ];
 
     /**
@@ -74,6 +75,7 @@ class User extends Authenticatable
             'notification_users' => 'boolean',
             'two_factor_enabled' => 'boolean',
             'api_access_enabled' => 'boolean',
+            'dashboard_preferences' => 'array',
         ];
     }
 
