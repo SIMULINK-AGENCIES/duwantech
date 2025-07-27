@@ -4,6 +4,12 @@ namespace App\Providers;
 
 use App\Services\Dashboard\LayoutService;
 use App\Services\Dashboard\WidgetService;
+use App\Services\Dashboard\ThemeService;
+use App\Services\Dashboard\ConfigurationService;
+use App\Contracts\Dashboard\LayoutServiceInterface;
+use App\Contracts\Dashboard\WidgetServiceInterface;
+use App\Contracts\Dashboard\ThemeServiceInterface;
+use App\Contracts\Dashboard\ConfigurationServiceInterface;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
@@ -20,7 +26,13 @@ class DashboardServiceProvider extends ServiceProvider
             config_path('dashboard.php'), 'dashboard'
         );
 
-        // Register dashboard services as singletons
+        // Register dashboard services as singletons with interfaces
+        $this->app->singleton(LayoutServiceInterface::class, LayoutService::class);
+        $this->app->singleton(WidgetServiceInterface::class, WidgetService::class);
+        $this->app->singleton(ThemeServiceInterface::class, ThemeService::class);
+        $this->app->singleton(ConfigurationServiceInterface::class, ConfigurationService::class);
+
+        // Register concrete implementations for direct access
         $this->app->singleton(LayoutService::class, function ($app) {
             return new LayoutService();
         });
@@ -29,9 +41,19 @@ class DashboardServiceProvider extends ServiceProvider
             return new WidgetService();
         });
 
-        // Register dashboard aliases
+        $this->app->singleton(ThemeService::class, function ($app) {
+            return new ThemeService();
+        });
+
+        $this->app->singleton(ConfigurationService::class, function ($app) {
+            return new ConfigurationService();
+        });
+
+        // Register dashboard aliases for convenience
         $this->app->alias(LayoutService::class, 'dashboard.layout');
         $this->app->alias(WidgetService::class, 'dashboard.widget');
+        $this->app->alias(ThemeService::class, 'dashboard.theme');
+        $this->app->alias(ConfigurationService::class, 'dashboard.config');
     }
 
     /**
