@@ -9,6 +9,10 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ActivityController;
+use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Admin\PerformanceController;
+use App\Http\Controllers\Admin\ReportsController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -35,6 +39,21 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::post('settings', [SettingsController::class, 'update'])->name('settings.update');
     
+    // Theme Settings
+    Route::get('settings/theme', function () {
+        return view('admin.settings.theme');
+    })->name('settings.theme');
+    
+    // Test Pages (Development) - Tasks 2.4.2, 2.4.3, 2.4.4
+    Route::get('test/theme-toggle', function () {
+        return view('admin.test.theme-toggle');
+    })->name('test.theme-toggle');
+    
+    // Theme Configuration & Animations Test - Tasks 2.4.3 & 2.4.4
+    Route::get('test/theme-config-animations', function () {
+        return view('admin.test.theme-config-animations');
+    })->name('test.theme-config-animations');
+    
     // General Settings (Frontend Control)
     Route::get('frontend', [GeneralSettingsController::class, 'index'])->name('frontend.index');
     Route::put('frontend', [GeneralSettingsController::class, 'update'])->name('frontend.update');
@@ -51,12 +70,43 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Live User Monitoring API
     Route::get('api/live-stats', [AdminController::class, 'getLiveStats'])->name('api.live-stats');
     
+    // Search API
+    Route::get('api/search', [AdminController::class, 'search'])->name('api.search');
+    
     // Activity Feed
     Route::get('activity', [App\Http\Controllers\Admin\ActivityController::class, 'index'])->name('activity.index');
     Route::get('api/live-activities', [App\Http\Controllers\Admin\ActivityController::class, 'getLiveActivities'])->name('api.live-activities');
     
-    // Profile Management
-    Route::get('profile', [ProfileController::class, 'show'])->name('profile.show');
+    // Notifications
+    Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    
+    // Notification API endpoints for real-time updates
+    Route::prefix('api/notifications')->name('api.notifications.')->group(function () {
+        Route::get('/', [NotificationController::class, 'getNotifications']);
+        Route::get('/count', [NotificationController::class, 'getUnreadCount']);
+        Route::post('/{notification}/read', [NotificationController::class, 'markAsRead']);
+        Route::post('/{notification}/unread', [NotificationController::class, 'markAsUnread']);
+        Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+        Route::delete('/{notification}', [NotificationController::class, 'destroy']);
+        Route::post('/bulk-delete', [NotificationController::class, 'bulkDelete']);
+        Route::post('/bulk-read', [NotificationController::class, 'bulkMarkAsRead']);
+        Route::get('/stats', [NotificationController::class, 'getStats']);
+        Route::post('/test', [NotificationController::class, 'createTestNotification']);
+        Route::post('/clear-old', [NotificationController::class, 'clearOld']);
+    });
+    
+    // Legacy notification routes (for backward compatibility)
+    Route::get('notifications/dropdown', [NotificationController::class, 'dropdown'])->name('notifications.dropdown');
+    Route::get('notifications/count', [NotificationController::class, 'count'])->name('notifications.count');
+    Route::post('notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
+    Route::delete('notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+    Route::post('notifications/bulk-delete', [NotificationController::class, 'bulkDelete'])->name('notifications.bulk-delete');
+    Route::post('notifications/test', [NotificationController::class, 'createTest'])->name('notifications.test');
+    Route::post('notifications/preferences', [NotificationController::class, 'updatePreferences'])->name('notifications.preferences');
+    
+    // Profile Management (using simple name for admin.profile route)
+    Route::get('profile', [ProfileController::class, 'show'])->name('profile');
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::put('profile/two-factor', [ProfileController::class, 'updateTwoFactor'])->name('profile.two-factor');
@@ -64,4 +114,36 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::delete('profile/avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.avatar.delete');
     Route::get('profile/export', [ProfileController::class, 'exportData'])->name('profile.export');
     Route::get('profile/activity', [ProfileController::class, 'getActivityLog'])->name('profile.activity');
+    
+    // Performance Monitoring Routes
+    Route::prefix('performance')->name('performance.')->group(function () {
+        Route::get('/', [PerformanceController::class, 'index'])->name('index');
+        Route::get('metrics', [PerformanceController::class, 'getMetrics'])->name('metrics');
+        Route::get('database', [PerformanceController::class, 'getDatabaseMetrics'])->name('database');
+        Route::get('cache', [PerformanceController::class, 'getCacheMetrics'])->name('cache');
+        Route::get('queue', [PerformanceController::class, 'getQueueMetrics'])->name('queue');
+        Route::get('health', [PerformanceController::class, 'getHealthStatus'])->name('health');
+        Route::get('health/summary', [PerformanceController::class, 'getHealthSummary'])->name('health.summary');
+        Route::post('optimize-cache', [PerformanceController::class, 'optimizeCache'])->name('optimize-cache');
+        Route::post('optimize-queues', [PerformanceController::class, 'optimizeQueues'])->name('optimize-queues');
+        Route::post('clear-cache', [PerformanceController::class, 'clearCache'])->name('clear-cache');
+        Route::post('warmup-cache', [PerformanceController::class, 'warmupCache'])->name('warmup-cache');
+        Route::post('migrate', [PerformanceController::class, 'runMigrations'])->name('migrate');
+    });
+    
+    // Reports Routes
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('/', [ReportsController::class, 'index'])->name('index');
+        Route::get('revenue', [ReportsController::class, 'revenue'])->name('revenue');
+        Route::get('sales', [ReportsController::class, 'sales'])->name('sales');
+        Route::get('customers', [ReportsController::class, 'customers'])->name('customers');
+        Route::get('products', [ReportsController::class, 'products'])->name('products');
+        
+        // API endpoints for reports data
+        Route::get('api/revenue', [ReportsController::class, 'getRevenueApi'])->name('api.revenue');
+        Route::get('api/sales', [ReportsController::class, 'getSalesApi'])->name('api.sales');
+        
+        // Export endpoints  
+        Route::get('export/revenue', [ReportsController::class, 'exportRevenue'])->name('export.revenue');
+    });
 });

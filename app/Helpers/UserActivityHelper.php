@@ -4,11 +4,18 @@ namespace App\Helpers;
 
 use App\Models\ActiveSession;
 use App\Models\User;
+use App\Services\GeolocationService;
 use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 
 class UserActivityHelper
 {
+    protected $geolocationService;
+
+    public function __construct(GeolocationService $geolocationService)
+    {
+        $this->geolocationService = $geolocationService;
+    }
     /**
      * Get current active users count with caching.
      */

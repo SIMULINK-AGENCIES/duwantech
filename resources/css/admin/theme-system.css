@@ -1,0 +1,486 @@
+/* ==========================================================================
+   ENTERPRISE ADMIN THEME SYSTEM
+   CSS Custom Properties & Design Tokens
+   ========================================================================== */
+
+/* ==========================================================================
+   ROOT VARIABLES - CSS Custom Properties
+   ========================================================================== */
+
+:root {
+  /* ==========================================================================
+     COLOR SYSTEM - Primary Brand Colors
+     ========================================================================== */
+  
+  /* Primary Brand Colors */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+  --color-primary-950: #172554;
+
+  /* Secondary Brand Colors */
+  --color-secondary-50: #f8fafc;
+  --color-secondary-100: #f1f5f9;
+  --color-secondary-200: #e2e8f0;
+  --color-secondary-300: #cbd5e1;
+  --color-secondary-400: #94a3b8;
+  --color-secondary-500: #64748b;
+  --color-secondary-600: #475569;
+  --color-secondary-700: #334155;
+  --color-secondary-800: #1e293b;
+  --color-secondary-900: #0f172a;
+  --color-secondary-950: #020617;
+
+  /* ==========================================================================
+     SEMANTIC COLOR SYSTEM
+     ========================================================================== */
+  
+  /* Success Colors */
+  --color-success-50: #f0fdf4;
+  --color-success-100: #dcfce7;
+  --color-success-200: #bbf7d0;
+  --color-success-300: #86efac;
+  --color-success-400: #4ade80;
+  --color-success-500: #22c55e;
+  --color-success-600: #16a34a;
+  --color-success-700: #15803d;
+  --color-success-800: #166534;
+  --color-success-900: #14532d;
+  --color-success-950: #052e16;
+
+  /* Warning Colors */
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-200: #fde68a;
+  --color-warning-300: #fcd34d;
+  --color-warning-400: #fbbf24;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+  --color-warning-700: #b45309;
+  --color-warning-800: #92400e;
+  --color-warning-900: #78350f;
+  --color-warning-950: #451a03;
+
+  /* Error/Danger Colors */
+  --color-error-50: #fef2f2;
+  --color-error-100: #fee2e2;
+  --color-error-200: #fecaca;
+  --color-error-300: #fca5a5;
+  --color-error-400: #f87171;
+  --color-error-500: #ef4444;
+  --color-error-600: #dc2626;
+  --color-error-700: #b91c1c;
+  --color-error-800: #991b1b;
+  --color-error-900: #7f1d1d;
+  --color-error-950: #450a0a;
+
+  /* Info Colors */
+  --color-info-50: #ecfeff;
+  --color-info-100: #cffafe;
+  --color-info-200: #a5f3fc;
+  --color-info-300: #67e8f9;
+  --color-info-400: #22d3ee;
+  --color-info-500: #06b6d4;
+  --color-info-600: #0891b2;
+  --color-info-700: #0e7490;
+  --color-info-800: #155e75;
+  --color-info-900: #164e63;
+  --color-info-950: #083344;
+
+  /* ==========================================================================
+     NEUTRAL GRAY SYSTEM
+     ========================================================================== */
+  
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+  --color-gray-950: #030712;
+
+  /* ==========================================================================
+     THEME SEMANTIC MAPPINGS - Light Theme
+     ========================================================================== */
+  
+  /* Background Colors */
+  --bg-primary: var(--color-gray-50);
+  --bg-secondary: var(--color-white);
+  --bg-tertiary: var(--color-gray-100);
+  --bg-accent: var(--color-primary-50);
+  --bg-muted: var(--color-gray-200);
+  --bg-overlay: rgba(0, 0, 0, 0.5);
+  --bg-glass: rgba(255, 255, 255, 0.8);
+
+  /* Text Colors */
+  --text-primary: var(--color-gray-900);
+  --text-secondary: var(--color-gray-700);
+  --text-tertiary: var(--color-gray-500);
+  --text-muted: var(--color-gray-400);
+  --text-inverse: var(--color-white);
+  --text-accent: var(--color-primary-600);
+  --text-brand: var(--color-primary-700);
+
+  /* Border Colors */
+  --border-primary: var(--color-gray-200);
+  --border-secondary: var(--color-gray-300);
+  --border-accent: var(--color-primary-200);
+  --border-focus: var(--color-primary-500);
+  --border-error: var(--color-error-300);
+  --border-success: var(--color-success-300);
+
+  /* Component Colors */
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-transparent: transparent;
+
+  /* ==========================================================================
+     TYPOGRAPHY SYSTEM
+     ========================================================================== */
+  
+  /* Font Families */
+  --font-primary: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-secondary: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Monaco', 'Consolas', monospace;
+  --font-heading: 'Inter', 'SF Pro Display', sans-serif;
+
+  /* Font Weights */
+  --font-weight-thin: 100;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+
+  /* Font Sizes - Type Scale (Major Third: 1.250) */
+  --font-size-xs: 0.75rem;      /* 12px */
+  --font-size-sm: 0.875rem;     /* 14px */
+  --font-size-base: 1rem;       /* 16px */
+  --font-size-lg: 1.125rem;     /* 18px */
+  --font-size-xl: 1.25rem;      /* 20px */
+  --font-size-2xl: 1.5rem;      /* 24px */
+  --font-size-3xl: 1.875rem;    /* 30px */
+  --font-size-4xl: 2.25rem;     /* 36px */
+  --font-size-5xl: 3rem;        /* 48px */
+  --font-size-6xl: 3.75rem;     /* 60px */
+  --font-size-7xl: 4.5rem;      /* 72px */
+  --font-size-8xl: 6rem;        /* 96px */
+  --font-size-9xl: 8rem;        /* 128px */
+
+  /* Line Heights */
+  --line-height-none: 1;
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+
+  /* Letter Spacing */
+  --letter-spacing-tighter: -0.05em;
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0em;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+  --letter-spacing-widest: 0.1em;
+
+  /* ==========================================================================
+     SPACING SYSTEM - 8px Grid System
+     ========================================================================== */
+  
+  /* Base Spacing (8px grid) */
+  --space-px: 1px;
+  --space-0: 0;
+  --space-0-5: 0.125rem;   /* 2px */
+  --space-1: 0.25rem;      /* 4px */
+  --space-1-5: 0.375rem;   /* 6px */
+  --space-2: 0.5rem;       /* 8px */
+  --space-2-5: 0.625rem;   /* 10px */
+  --space-3: 0.75rem;      /* 12px */
+  --space-3-5: 0.875rem;   /* 14px */
+  --space-4: 1rem;         /* 16px */
+  --space-5: 1.25rem;      /* 20px */
+  --space-6: 1.5rem;       /* 24px */
+  --space-7: 1.75rem;      /* 28px */
+  --space-8: 2rem;         /* 32px */
+  --space-9: 2.25rem;      /* 36px */
+  --space-10: 2.5rem;      /* 40px */
+  --space-11: 2.75rem;     /* 44px */
+  --space-12: 3rem;        /* 48px */
+  --space-14: 3.5rem;      /* 56px */
+  --space-16: 4rem;        /* 64px */
+  --space-20: 5rem;        /* 80px */
+  --space-24: 6rem;        /* 96px */
+  --space-28: 7rem;        /* 112px */
+  --space-32: 8rem;        /* 128px */
+  --space-36: 9rem;        /* 144px */
+  --space-40: 10rem;       /* 160px */
+  --space-44: 11rem;       /* 176px */
+  --space-48: 12rem;       /* 192px */
+  --space-52: 13rem;       /* 208px */
+  --space-56: 14rem;       /* 224px */
+  --space-60: 15rem;       /* 240px */
+  --space-64: 16rem;       /* 256px */
+  --space-72: 18rem;       /* 288px */
+  --space-80: 20rem;       /* 320px */
+  --space-96: 24rem;       /* 384px */
+
+  /* Component Specific Spacing */
+  --spacing-component-xs: var(--space-2);    /* 8px */
+  --spacing-component-sm: var(--space-3);    /* 12px */
+  --spacing-component-md: var(--space-4);    /* 16px */
+  --spacing-component-lg: var(--space-6);    /* 24px */
+  --spacing-component-xl: var(--space-8);    /* 32px */
+  --spacing-component-2xl: var(--space-12);  /* 48px */
+
+  /* Layout Spacing */
+  --spacing-layout-xs: var(--space-4);       /* 16px */
+  --spacing-layout-sm: var(--space-6);       /* 24px */
+  --spacing-layout-md: var(--space-8);       /* 32px */
+  --spacing-layout-lg: var(--space-12);      /* 48px */
+  --spacing-layout-xl: var(--space-16);      /* 64px */
+  --spacing-layout-2xl: var(--space-24);     /* 96px */
+
+  /* ==========================================================================
+     BORDER RADIUS SYSTEM
+     ========================================================================== */
+  
+  --radius-none: 0;
+  --radius-sm: 0.125rem;    /* 2px */
+  --radius-base: 0.25rem;   /* 4px */
+  --radius-md: 0.375rem;    /* 6px */
+  --radius-lg: 0.5rem;      /* 8px */
+  --radius-xl: 0.75rem;     /* 12px */
+  --radius-2xl: 1rem;       /* 16px */
+  --radius-3xl: 1.5rem;     /* 24px */
+  --radius-full: 9999px;
+
+  /* Component Specific Radius */
+  --radius-button: var(--radius-lg);
+  --radius-card: var(--radius-xl);
+  --radius-input: var(--radius-md);
+  --radius-badge: var(--radius-full);
+
+  /* ==========================================================================
+     SHADOW SYSTEM
+     ========================================================================== */
+  
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-base: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-2xl: 0 50px 100px -20px rgba(0, 0, 0, 0.25);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+
+  /* Colored Shadows */
+  --shadow-primary: 0 10px 15px -3px rgba(59, 130, 246, 0.1), 0 4px 6px -4px rgba(59, 130, 246, 0.1);
+  --shadow-error: 0 10px 15px -3px rgba(239, 68, 68, 0.1), 0 4px 6px -4px rgba(239, 68, 68, 0.1);
+  --shadow-success: 0 10px 15px -3px rgba(34, 197, 94, 0.1), 0 4px 6px -4px rgba(34, 197, 94, 0.1);
+  --shadow-warning: 0 10px 15px -3px rgba(245, 158, 11, 0.1), 0 4px 6px -4px rgba(245, 158, 11, 0.1);
+
+  /* ==========================================================================
+     Z-INDEX SYSTEM
+     ========================================================================== */
+  
+  --z-auto: auto;
+  --z-0: 0;
+  --z-10: 10;
+  --z-20: 20;
+  --z-30: 30;
+  --z-40: 40;
+  --z-50: 50;
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+
+  /* ==========================================================================
+     TRANSITION SYSTEM
+     ========================================================================== */
+  
+  /* Transition Durations */
+  --duration-75: 75ms;
+  --duration-100: 100ms;
+  --duration-150: 150ms;
+  --duration-200: 200ms;
+  --duration-300: 300ms;
+  --duration-500: 500ms;
+  --duration-700: 700ms;
+  --duration-1000: 1000ms;
+
+  /* Transition Timing Functions */
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in-back: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ease-out-back: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  /* Common Transitions */
+  --transition-fast: all var(--duration-150) var(--ease-out);
+  --transition-base: all var(--duration-200) var(--ease-out);
+  --transition-slow: all var(--duration-300) var(--ease-out);
+  --transition-colors: color var(--duration-150) var(--ease-out), background-color var(--duration-150) var(--ease-out), border-color var(--duration-150) var(--ease-out);
+  --transition-transform: transform var(--duration-200) var(--ease-out);
+  --transition-opacity: opacity var(--duration-200) var(--ease-out);
+
+  /* ==========================================================================
+     COMPONENT SIZE SYSTEM
+     ========================================================================== */
+  
+  /* Button Heights */
+  --height-button-xs: 1.5rem;    /* 24px */
+  --height-button-sm: 2rem;      /* 32px */
+  --height-button-md: 2.5rem;    /* 40px */
+  --height-button-lg: 3rem;      /* 48px */
+  --height-button-xl: 3.5rem;    /* 56px */
+
+  /* Input Heights */
+  --height-input-xs: 1.75rem;    /* 28px */
+  --height-input-sm: 2.25rem;    /* 36px */
+  --height-input-md: 2.5rem;     /* 40px */
+  --height-input-lg: 3rem;       /* 48px */
+  --height-input-xl: 3.5rem;     /* 56px */
+
+  /* Icon Sizes */
+  --size-icon-xs: 0.75rem;       /* 12px */
+  --size-icon-sm: 1rem;          /* 16px */
+  --size-icon-md: 1.25rem;       /* 20px */
+  --size-icon-lg: 1.5rem;        /* 24px */
+  --size-icon-xl: 2rem;          /* 32px */
+  --size-icon-2xl: 2.5rem;       /* 40px */
+
+  /* Avatar Sizes */
+  --size-avatar-xs: 1.5rem;      /* 24px */
+  --size-avatar-sm: 2rem;        /* 32px */
+  --size-avatar-md: 2.5rem;      /* 40px */
+  --size-avatar-lg: 3rem;        /* 48px */
+  --size-avatar-xl: 4rem;        /* 64px */
+  --size-avatar-2xl: 5rem;       /* 80px */
+}
+
+/* ==========================================================================
+   DARK THEME VARIABLES
+   ========================================================================== */
+
+[data-theme="dark"], .dark {
+  /* Background Colors - Dark Theme */
+  --bg-primary: var(--color-gray-900);
+  --bg-secondary: var(--color-gray-800);
+  --bg-tertiary: var(--color-gray-700);
+  --bg-accent: var(--color-primary-900);
+  --bg-muted: var(--color-gray-600);
+  --bg-overlay: rgba(0, 0, 0, 0.8);
+  --bg-glass: rgba(0, 0, 0, 0.8);
+
+  /* Text Colors - Dark Theme */
+  --text-primary: var(--color-gray-50);
+  --text-secondary: var(--color-gray-300);
+  --text-tertiary: var(--color-gray-400);
+  --text-muted: var(--color-gray-500);
+  --text-inverse: var(--color-gray-900);
+  --text-accent: var(--color-primary-400);
+  --text-brand: var(--color-primary-300);
+
+  /* Border Colors - Dark Theme */
+  --border-primary: var(--color-gray-700);
+  --border-secondary: var(--color-gray-600);
+  --border-accent: var(--color-primary-700);
+  --border-focus: var(--color-primary-400);
+  --border-error: var(--color-error-600);
+  --border-success: var(--color-success-600);
+
+  /* Adjust shadows for dark theme */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.4);
+  --shadow-base: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -4px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.7), 0 8px 10px -6px rgba(0, 0, 0, 0.7);
+  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+  --shadow-2xl: 0 50px 100px -20px rgba(0, 0, 0, 0.9);
+}
+
+/* ==========================================================================
+   HIGH CONTRAST THEME
+   ========================================================================== */
+
+@media (prefers-contrast: high) {
+  :root {
+    --border-primary: var(--color-gray-900);
+    --border-secondary: var(--color-gray-800);
+    --text-primary: var(--color-black);
+    --text-secondary: var(--color-gray-900);
+  }
+
+  [data-theme="dark"], .dark {
+    --border-primary: var(--color-gray-100);
+    --border-secondary: var(--color-gray-200);
+    --text-primary: var(--color-white);
+    --text-secondary: var(--color-gray-100);
+  }
+}
+
+/* ==========================================================================
+   REDUCED MOTION PREFERENCES
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-75: 0ms;
+    --duration-100: 0ms;
+    --duration-150: 0ms;
+    --duration-200: 0ms;
+    --duration-300: 0ms;
+    --duration-500: 0ms;
+    --duration-700: 0ms;
+    --duration-1000: 0ms;
+    
+    --transition-fast: none;
+    --transition-base: none;
+    --transition-slow: none;
+    --transition-colors: none;
+    --transition-transform: none;
+    --transition-opacity: none;
+  }
+}
+
+/* ==========================================================================
+   PRINT STYLES
+   ========================================================================== */
+
+@media print {
+  :root {
+    --bg-primary: white;
+    --bg-secondary: white;
+    --bg-tertiary: white;
+    --text-primary: black;
+    --text-secondary: black;
+    --text-tertiary: black;
+    --border-primary: black;
+    --shadow-xs: none;
+    --shadow-sm: none;
+    --shadow-base: none;
+    --shadow-md: none;
+    --shadow-lg: none;
+    --shadow-xl: none;
+    --shadow-2xl: none;
+  }
+}

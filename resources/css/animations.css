@@ -1,0 +1,373 @@
+/* Enhanced Animations & Transitions */
+
+/* Smooth entrance animations */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Loading animations */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: .5;
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(-25%);
+        animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    50% {
+        transform: translateY(0);
+        animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200px 0;
+    }
+    100% {
+        background-position: calc(200px + 100%) 0;
+    }
+}
+
+/* Progress bar animation */
+@keyframes progressBar {
+    from {
+        width: 0%;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+/* Notification slide animations */
+@keyframes slideNotificationIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideNotificationOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* Hover effects */
+@keyframes hoverGlow {
+    0% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+    }
+}
+
+/* Chart animations */
+@keyframes chartFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Animation utility classes */
+.animate-slide-in-up {
+    animation: slideInUp 0.6s ease-out forwards;
+}
+
+.animate-slide-in-right {
+    animation: slideInRight 0.6s ease-out forwards;
+}
+
+.animate-slide-in-down {
+    animation: slideInDown 0.6s ease-out forwards;
+}
+
+.animate-slide-in-left {
+    animation: slideInLeft 0.6s ease-out forwards;
+}
+
+.animate-fade-in-scale {
+    animation: fadeInScale 0.5s ease-out forwards;
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+.animate-bounce {
+    animation: bounce 1s infinite;
+}
+
+.animate-shimmer {
+    background: linear-gradient(
+        90deg,
+        #f0f0f0 25%,
+        #e0e0e0 50%,
+        #f0f0f0 75%
+    );
+    background-size: 200px 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+.animate-hover-glow:hover {
+    animation: hoverGlow 0.6s ease-out;
+}
+
+.animate-chart-fade-in {
+    animation: chartFadeIn 0.8s ease-out forwards;
+}
+
+/* Staggered animations */
+.stagger-animation > * {
+    opacity: 0;
+    animation: slideInUp 0.6s ease-out forwards;
+}
+
+.stagger-animation > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-animation > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
+.stagger-animation > *:nth-child(4) { animation-delay: 0.4s; }
+.stagger-animation > *:nth-child(5) { animation-delay: 0.5s; }
+.stagger-animation > *:nth-child(6) { animation-delay: 0.6s; }
+
+/* Smooth transitions */
+.transition-all {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.transition-smooth {
+    transition: all 0.3s ease-in-out;
+}
+
+.transition-bounce {
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Loading states */
+.loading-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200px 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+}
+
+.loading-dots::after {
+    content: '';
+    animation: dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dots {
+    0%, 20% {
+        color: rgba(0, 0, 0, 0);
+        text-shadow:
+            .25em 0 0 rgba(0, 0, 0, 0),
+            .5em 0 0 rgba(0, 0, 0, 0);
+    }
+    40% {
+        color: rgba(0, 0, 0, 1);
+        text-shadow:
+            .25em 0 0 rgba(0, 0, 0, 0),
+            .5em 0 0 rgba(0, 0, 0, 0);
+    }
+    60% {
+        text-shadow:
+            .25em 0 0 rgba(0, 0, 0, 1),
+            .5em 0 0 rgba(0, 0, 0, 0);
+    }
+    80%, 100% {
+        text-shadow:
+            .25em 0 0 rgba(0, 0, 0, 1),
+            .5em 0 0 rgba(0, 0, 0, 1);
+    }
+}
+
+/* Button hover effects */
+.btn-hover-float:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.btn-hover-scale:hover {
+    transform: scale(1.05);
+}
+
+/* Card hover effects */
+.card-hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.card-hover-glow:hover {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+/* Mobile responsiveness improvements */
+@media (max-width: 768px) {
+    .animate-slide-in-up,
+    .animate-slide-in-right,
+    .animate-slide-in-down,
+    .animate-slide-in-left {
+        animation-duration: 0.4s;
+    }
+    
+    .stagger-animation > * {
+        animation-duration: 0.4s;
+    }
+    
+    .stagger-animation > *:nth-child(n) {
+        animation-delay: 0.05s;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .loading-skeleton {
+        background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+    }
+    
+    .animate-shimmer {
+        background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+    }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .animate-pulse,
+    .animate-spin,
+    .animate-bounce {
+        animation: none;
+    }
+}
+
+/* Focus animations */
+.focus-glow:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+    animation: hoverGlow 0.6s ease-out;
+}
+
+/* Success/Error state animations */
+.success-checkmark {
+    animation: checkmark 0.6s ease-in-out forwards;
+}
+
+@keyframes checkmark {
+    0% {
+        opacity: 0;
+        transform: scale(0) rotate(45deg);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2) rotate(45deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(45deg);
+    }
+}
+
+.error-shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}

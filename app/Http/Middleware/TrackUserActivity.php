@@ -48,6 +48,16 @@ class TrackUserActivity
     protected function trackActivity(Request $request): void
     {
         try {
+            // Skip tracking for API routes as they don't have sessions
+            if ($request->is('api/*')) {
+                return;
+            }
+            
+            // Skip tracking if session is not available (e.g., during testing)
+            if (!$request->hasSession()) {
+                return;
+            }
+            
             $sessionId = $request->session()->getId();
             $user = Auth::user();
             $ipAddress = $request->ip();
@@ -67,7 +77,7 @@ class TrackUserActivity
                     'session_id' => $sessionId,
                     'ip_address' => $ipAddress,
                     'user_agent' => $userAgent,
-                    'location' => $locationData,
+                    'location_data' => json_encode($locationData),
                     'page_url' => $pageUrl,
                     'last_activity' => now(),
                 ]);
@@ -95,8 +105,9 @@ class TrackUserActivity
 
         } catch (\Exception $e) {
             // Log error but don't break the application
+            $sessionId = $request->hasSession() ? $request->session()->getId() : 'no-session';
             \Log::error('Error tracking user activity: ' . $e->getMessage(), [
-                'session_id' => $request->session()->getId(),
+                'session_id' => $sessionId,
                 'user_id' => Auth::id(),
                 'ip_address' => $request->ip(),
                 'url' => $request->fullUrl(),
