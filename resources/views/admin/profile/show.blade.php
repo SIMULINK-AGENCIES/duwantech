@@ -1,8 +1,12 @@
-@extends('admin.layout')
+<x-admin.layouts.master title="Profile Settings">
+    <x-slot name="breadcrumbs">
+        @php
+            $breadcrumbs = [
+                ['title' => 'Profile Settings', 'url' => route('admin.profile.show')]
+            ];
+        @endphp
+    </x-slot>
 
-@section('title', 'Profile Settings')
-
-@section('content')
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
@@ -563,4 +567,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-@endsection
+    </div>
+</div>
+</x-admin.layouts.master>

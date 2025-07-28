@@ -1,14 +1,11 @@
-@extends('admin.layouts.master')
-
-@section('title', 'Dashboard')
-
-@php
-    $breadcrumbs = [
-        ['title' => 'Dashboard', 'url' => route('admin.dashboard')]
-    ];
-@endphp
-
-@section('content')
+<x-admin.layouts.master title="Dashboard">
+    <x-slot name="breadcrumbs">
+        @php
+            $breadcrumbs = [
+                ['title' => 'Dashboard', 'url' => route('admin.dashboard')]
+            ];
+        @endphp
+    </x-slot>
 
     <!-- Dashboard Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
@@ -259,5 +256,5 @@
             // setupRealTimeUpdates();
         });
     </script>
-@endpush
-@endsection
+    @endpush
+</x-admin.layouts.master>

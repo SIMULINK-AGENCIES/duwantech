@@ -1,12 +1,17 @@
-@extends('admin.layout')
+<x-admin.layouts.master title="Transactions">
+    <x-slot name="breadcrumbs">
+        @php
+            $breadcrumbs = [
+                ['title' => 'Orders', 'url' => route('admin.orders.index')],
+                ['title' => 'Transactions', 'url' => route('admin.orders.transactions')]
+            ];
+        @endphp
+    </x-slot>
 
-@section('title', 'Transactions')
-
-@section('content')
 <div class="space-y-6">
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-bold text-gray-900">M-PESA Transactions</h1>
-        <a href="{{ route('admin.orders.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+        <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary">
             Back to Orders
         </a>
     </div>
@@ -132,13 +137,13 @@
 
         <div class="mt-6">
             {{ $transactions->links() }}
-        </div>
-    @else
-        <div class="text-center py-12">
-            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
             </svg>
             <h3 class="mt-2 text-sm font-medium text-gray-900">No transactions</h3>
+            <p class="mt-1 text-sm text-gray-500">M-PESA transactions will appear here when payments are processed.</p>
+        </div>
+    @endif
+</div>
+</x-admin.layouts.master> <h3 class="mt-2 text-sm font-medium text-gray-900">No transactions</h3>
             <p class="mt-1 text-sm text-gray-500">M-PESA transactions will appear here when payments are processed.</p>
         </div>
     @endif

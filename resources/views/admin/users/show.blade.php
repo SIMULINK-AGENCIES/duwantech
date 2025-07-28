@@ -1,12 +1,17 @@
-@extends('admin.layout')
+<x-admin.layouts.master title="User Details">
+    <x-slot name="breadcrumbs">
+        @php
+            $breadcrumbs = [
+                ['title' => 'Users', 'url' => route('admin.users.index')],
+                ['title' => $user->name, 'url' => route('admin.users.show', $user)]
+            ];
+        @endphp
+    </x-slot>
 
-@section('title', 'User Details')
-
-@section('content')
 <div class="space-y-6">
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-bold text-gray-900">{{ $user->name }}</h1>
-        <a href="{{ route('admin.users.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+        <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">
             Back to Users
         </a>
     </div>
@@ -162,12 +167,12 @@
         </div>
     @else
         <div class="bg-white shadow rounded-lg p-6">
-            <div class="text-center">
-                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                </svg>
-                <h3 class="mt-2 text-sm font-medium text-gray-900">No orders</h3>
                 <p class="mt-1 text-sm text-gray-500">This user hasn't placed any orders yet.</p>
+            </div>
+        </div>
+    @endif
+</div>
+</x-admin.layouts.master>     <p class="mt-1 text-sm text-gray-500">This user hasn't placed any orders yet.</p>
             </div>
         </div>
     @endif

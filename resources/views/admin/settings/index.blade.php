@@ -1,10 +1,21 @@
-@extends('admin.layout')
+<x-admin.layouts.master title="Settings">
+    <x-slot name="breadcrumbs">
+        @php
+            $breadcrumbs = [
+                ['title' => 'Settings', 'url' => route('admin.settings.index')]
+            ];
+        @endphp
+    </x-slot>
 
-@section('title', 'Settings')
-
-@section('content')
-<div class="space-y-6">
-    <h1 class="text-2xl font-bold text-gray-900">Site Settings</h1>
+    <!-- Settings Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Site Settings</h1>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                Configure your site's general settings and preferences.
+            </p>
+        </div>
+    </div>
 
     <form action="{{ route('admin.settings.update') }}" method="POST" class="space-y-8">
         @csrf
@@ -115,10 +126,12 @@
 
         <!-- Save Button -->
         <div class="flex justify-end">
-            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">
+            <button type="submit" class="btn btn-primary">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
                 Save Settings
             </button>
         </div>
     </form>
-</div>
-@endsection 
+</x-admin.layouts.master>

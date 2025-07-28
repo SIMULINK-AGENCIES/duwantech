@@ -1,38 +1,45 @@
-@extends('admin.layout')
+<x-admin.layouts.master title="Activity Feed">
+    <x-slot name="breadcrumbs">
+        @php
+            $breadcrumbs = [
+                ['title' => 'Activity Feed', 'url' => route('admin.activity.index')]
+            ];
+        @endphp
+    </x-slot>
 
-@section('title', 'Activity Feed')
-
-@section('content')
-<div class="space-y-6">
     <!-- Page Header -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900">Activity Feed</h1>
-                <p class="text-gray-600">Monitor real-time user activity and system events</p>
-            </div>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Activity Feed</h1>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                Monitor real-time user activity and system events
+            </p>
+        </div>
+        
+        <div class="mt-4 sm:mt-0 flex space-x-3">
+            <!-- Export Button -->
+            <button onclick="window.print()" 
+                    class="btn btn-secondary">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                    </path>
+                </svg>
+                Export
+            </button>
             
-            <div class="flex items-center space-x-3">
-                <!-- Export Button -->
-                <button onclick="window.print()" 
-                        class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200">
-                    <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                        </path>
-                    </svg>
-                    Export
-                </button>
-                
-                <!-- Back to Dashboard -->
-                <a href="{{ route('admin.dashboard') }}" 
-                   class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
-                    <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z">
-                        </path>
-                    </svg>
-                    Dashboard
+            <!-- Back to Dashboard -->
+            <a href="{{ route('admin.dashboard') }}" 
+               class="btn btn-primary">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z">
+                    </path>
+                </svg>
+                Dashboard
+            </a>
+        </div>
+    </div>
                 </a>
             </div>
         </div>
@@ -180,5 +187,4 @@
             </div>
         </div>
     </div>
-</div>
-@endsection
+</x-admin.layouts.master>

@@ -15,6 +15,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     <!-- Alpine.js for dropdown functionality -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="font-sans antialiased">

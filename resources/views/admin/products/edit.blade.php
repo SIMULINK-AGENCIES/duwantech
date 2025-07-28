@@ -1,17 +1,32 @@
-@extends('admin.layout')
+<x-admin.layouts.master title="Edit Product">
+    <x-slot name="breadcrumbs">
+        @php
+            $breadcrumbs = [
+                ['title' => 'Products', 'url' => route('admin.products.index')],
+                ['title' => 'Edit Product', 'url' => route('admin.products.edit', $product)]
+            ];
+        @endphp
+    </x-slot>
 
-@section('title', 'Edit Product')
-
-@section('content')
-<div class="space-y-6">
-    <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-bold text-gray-900">Edit Product</h1>
-        <a href="{{ route('admin.products.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
-            Back to Products
-        </a>
+    <!-- Edit Product Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Edit Product</h1>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                Update product information and settings.
+            </p>
+        </div>
+        <div class="mt-4 sm:mt-0 flex space-x-3">
+            <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m0 7h18"></path>
+                </svg>
+                Back to Products
+            </a>
+        </div>
     </div>
 
-    <div class="bg-white shadow rounded-lg p-6">
+    <div class="card">
         <form action="{{ route('admin.products.update', $product) }}" method="POST">
             @csrf
             @method('PUT')
@@ -114,14 +129,16 @@
 
             <div class="mt-6 flex justify-end space-x-3">
                 <a href="{{ route('admin.products.index') }}" 
-                   class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">
+                   class="btn btn-outline">
                     Cancel
                 </a>
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                <button type="submit" class="btn btn-primary">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
                     Update Product
                 </button>
             </div>
         </form>
     </div>
-</div>
-@endsection 
+</x-admin.layouts.master>

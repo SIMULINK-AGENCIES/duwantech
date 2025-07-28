@@ -1,12 +1,17 @@
-@extends('admin.layout')
+<x-admin.layouts.master title="Order Details">
+    <x-slot name="breadcrumbs">
+        @php
+            $breadcrumbs = [
+                ['title' => 'Orders', 'url' => route('admin.orders.index')],
+                ['title' => 'Order #' . $order->order_number, 'url' => route('admin.orders.show', $order)]
+            ];
+        @endphp
+    </x-slot>
 
-@section('title', 'Order Details')
-
-@section('content')
 <div class="space-y-6">
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-bold text-gray-900">Order #{{ $order->order_number }}</h1>
-        <a href="{{ route('admin.orders.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+        <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary">
             Back to Orders
         </a>
     </div>
@@ -160,12 +165,12 @@
                         
                         @if($order->payment->paid_at)
                             <div class="flex justify-between">
-                                <span class="text-sm font-medium text-gray-500">Paid At:</span>
-                                <span class="text-sm text-gray-900">{{ $order->payment->paid_at->format('M d, Y H:i') }}</span>
-                            </div>
-                        @endif
-                    </div>
                 </div>
+            @endif
+        </div>
+    </div>
+</div>
+</x-admin.layouts.master>     </div>
             @endif
         </div>
     </div>

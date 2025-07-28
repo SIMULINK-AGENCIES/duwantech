@@ -333,7 +333,7 @@ function notificationDropdown() {
                         if (Notification.permission === 'granted') {
                             new Notification(notification.data.title, {
                                 body: notification.data.message,
-                                icon: '/favicon.ico'
+                                icon: '/admin/images/logo.png'
                             });
                         }
                     });

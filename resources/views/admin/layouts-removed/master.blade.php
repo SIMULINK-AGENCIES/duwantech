@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="robots" content="noindex, nofollow">
     
-    <title>@yield('title', config('app.name') . ' - Admin Dashboard')</title>
+    <title>{{ isset($title) ? $title . ' - ' . config('app.name') : config('app.name') . ' - Admin Dashboard' }}</title>
     
     <!-- Preconnect for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -106,31 +106,6 @@
         .skip-link:focus {
             top: 6px;
         }
-        
-        /* Print styles support */
-        @media print {
-            .no-print {
-                display: none !important;
-            }
-            
-            body {
-                background: white !important;
-                color: black !important;
-            }
-        }
-        
-        /* Cross-browser compatibility features */
-        .sidebar {
-            -webkit-transform: translateX(0);
-            -ms-transform: translateX(0);
-            transform: translateX(0);
-        }
-        
-        .flex-container {
-            display: -webkit-box;
-            display: -ms-flexbox;
-            display: flex;
-        }
     </style>
     
     @stack('styles')
@@ -173,10 +148,9 @@
             <!-- Sidebar Header -->
             <div class="flex items-center justify-between h-16 px-4 border-b border-gray-200">
                 <div class="flex items-center space-x-3" :class="{ 'justify-center': sidebarCollapsed }">
-                    <!-- Logo placeholder until assets are available -->
-                    <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center flex-shrink-0">
-                        <span class="text-white font-bold text-xs">D</span>
-                    </div>
+                    <img src="{{ asset('admin/images/logo.svg') }}" 
+                         alt="{{ config('app.name') }}" 
+                         class="h-8 w-8 flex-shrink-0">
                     <span class="font-semibold text-gray-900 transition-opacity duration-300"
                           :class="{ 'opacity-0 hidden': sidebarCollapsed }"
                           x-show="!sidebarCollapsed"
@@ -189,8 +163,7 @@
                 <button @click="toggleSidebar()" 
                         class="p-1.5 rounded-md hover:bg-gray-100 transition-colors duration-200 hidden lg:block"
                         :class="{ 'hidden': sidebarCollapsed }"
-                        aria-label="Toggle sidebar"
-                        tabindex="0">
+                        aria-label="Toggle sidebar">
                     <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path>
                     </svg>
@@ -199,29 +172,12 @@
             
             <!-- Sidebar Navigation -->
             <nav class="flex-1 overflow-y-auto py-4" aria-label="Sidebar navigation">
-                <!-- Simple Navigation for now -->
-                <div class="px-4">
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center px-3 py-2 text-sm font-medium text-gray-900 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" tabindex="0">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
-                        </svg>
-                        Dashboard
-                    </a>
-                </div>
+                @include('admin.layouts.partials.sidebar-nav')
             </nav>
             
             <!-- Sidebar Footer -->
             <div class="border-t border-gray-200 p-4">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-gray-500">
-                            <span class="text-xs font-medium leading-none text-white">A</span>
-                        </span>
-                    </div>
-                    <div class="ml-3">
-                        <p class="text-sm font-medium text-gray-700">Admin User</p>
-                    </div>
-                </div>
+                @include('admin.layouts.partials.sidebar-footer')
             </div>
         </aside>
         
@@ -247,15 +203,14 @@
              }">
             
             <!-- Top Header -->
-            <header class="sticky top-0 z-20 bg-white border-b border-gray-200 shadow-sm main-header"
+            <header class="sticky top-0 z-20 bg-white border-b border-gray-200 shadow-sm"
                     role="banner">
                 <div class="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
                     
                     <!-- Mobile Menu Button -->
                     <button @click="toggleSidebar()" 
-                            class="p-2 rounded-md hover:bg-gray-100 transition-colors duration-200 lg:hidden focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            aria-label="Open sidebar"
-                            tabindex="0">
+                            class="p-2 rounded-md hover:bg-gray-100 transition-colors duration-200 lg:hidden"
+                            aria-label="Open sidebar">
                         <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
@@ -263,11 +218,10 @@
                     
                     <!-- Desktop Sidebar Toggle -->
                     <button @click="toggleSidebar()" 
-                            class="p-2 rounded-md hover:bg-gray-100 transition-colors duration-200 hidden lg:block focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            class="p-2 rounded-md hover:bg-gray-100 transition-colors duration-200 hidden lg:block"
                             :class="{ 'block': sidebarCollapsed }"
                             x-show="sidebarCollapsed"
-                            aria-label="Expand sidebar"
-                            tabindex="0">
+                            aria-label="Expand sidebar">
                         <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path>
                         </svg>
@@ -276,18 +230,13 @@
                     <!-- Page Title -->
                     <div class="flex-1 px-4">
                         <h1 class="text-xl font-semibold text-gray-900 truncate" id="page-title">
-                            @yield('title', 'Dashboard')
+                            {{ $title ?? 'Dashboard' }}
                         </h1>
                     </div>
                     
                     <!-- Header Actions -->
                     <div class="flex items-center space-x-4">
-                        <!-- Simple header actions -->
-                        <button type="button" class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500" tabindex="0">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5-5V9a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2h2"></path>
-                            </svg>
-                        </button>
+                        @include('admin.layouts.partials.header-actions')
                     </div>
                 </div>
             </header>
@@ -304,7 +253,7 @@
                     <!-- Breadcrumb -->
                     @if(isset($breadcrumbs) && count($breadcrumbs) > 0)
                         <nav class="mb-6" aria-label="Breadcrumb">
-                            <ol class="flex items-center space-x-2 text-sm breadcrumb">
+                            <ol class="flex items-center space-x-2 text-sm">
                                 @foreach($breadcrumbs as $index => $breadcrumb)
                                     <li class="flex items-center">
                                         @if($index > 0)
@@ -313,7 +262,7 @@
                                             </svg>
                                         @endif
                                         @if(isset($breadcrumb['url']) && !$loop->last)
-                                            <a href="{{ $breadcrumb['url'] }}" class="text-gray-500 hover:text-gray-700 transition-colors duration-200" tabindex="0">
+                                            <a href="{{ $breadcrumb['url'] }}" class="text-gray-500 hover:text-gray-700 transition-colors duration-200">
                                                 {{ $breadcrumb['title'] }}
                                             </a>
                                         @else
@@ -328,23 +277,13 @@
                     <!-- Flash Messages -->
                     @if(session('success') || session('error') || session('warning') || session('info'))
                         <div class="mb-6 space-y-2">
-                            @if(session('success'))
-                                <div class="flash-message bg-green-50 border border-green-200 rounded-lg p-4 flex items-start space-x-3" role="alert" aria-live="polite">
-                                    <svg class="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    <div class="flex-1">
-                                        <h3 class="text-sm font-medium text-green-800">Success</h3>
-                                        <p class="mt-1 text-sm text-green-700">{{ session('success') }}</p>
-                                    </div>
-                                </div>
-                            @endif
+                            @include('admin.layouts.partials.flash-messages')
                         </div>
                     @endif
                     
                     <!-- Page Content -->
                     <div class="space-y-6">
-                        @yield('content')
+                        {{ $slot }}
                     </div>
                 </div>
             </main>

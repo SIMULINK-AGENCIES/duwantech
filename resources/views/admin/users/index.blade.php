@@ -1,8 +1,12 @@
-@extends('admin.layout')
+<x-admin.layouts.master title="Users">
+    <x-slot name="breadcrumbs">
+        @php
+            $breadcrumbs = [
+                ['title' => 'Users', 'url' => route('admin.users.index')]
+            ];
+        @endphp
+    </x-slot>
 
-@section('title', 'Users')
-
-@section('content')
 <div class="space-y-6">
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-bold text-gray-900">Users</h1>
@@ -74,4 +78,4 @@
         </div>
     @endif
 </div>
-@endsection 
+</x-admin.layouts.master> 

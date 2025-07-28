@@ -1,12 +1,17 @@
-@extends('admin.layout')
+<x-admin.layouts.master title="Edit Category">
+    <x-slot name="breadcrumbs">
+        @php
+            $breadcrumbs = [
+                ['title' => 'Categories', 'url' => route('admin.categories.index')],
+                ['title' => 'Edit Category', 'url' => route('admin.categories.edit', $category)]
+            ];
+        @endphp
+    </x-slot>
 
-@section('title', 'Edit Category')
-
-@section('content')
 <div class="space-y-6">
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-bold text-gray-900">Edit Category</h1>
-        <a href="{{ route('admin.categories.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+        <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">
             Back to Categories
         </a>
     </div>
@@ -64,14 +69,14 @@
 
             <div class="mt-6 flex justify-end space-x-3">
                 <a href="{{ route('admin.categories.index') }}" 
-                   class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">
+                   class="btn btn-secondary">
                     Cancel
                 </a>
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                <button type="submit" class="btn btn-primary">
                     Update Category
                 </button>
             </div>
         </form>
     </div>
 </div>
-@endsection 
+</x-admin.layouts.master> 

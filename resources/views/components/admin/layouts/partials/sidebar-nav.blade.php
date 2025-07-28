@@ -21,11 +21,11 @@
 
     <!-- Analytics -->
     <li role="none">
-        <a href="{{ route('admin.reports.index') }}" 
-           class="nav-link group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 {{ request()->routeIs('admin.reports*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}"
+        <a href="{{ route('api.admin.analytics.overview') }}" 
+           class="nav-link group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 {{ request()->routeIs('admin.analytics*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}"
            role="menuitem"
            :title="sidebarCollapsed ? 'Analytics' : ''"
-           aria-current="{{ request()->routeIs('admin.reports*') ? 'page' : 'false' }}">
+           aria-current="{{ request()->routeIs('admin.analytics*') ? 'page' : 'false' }}">
             <svg class="flex-shrink-0 w-5 h-5 mr-3 transition-colors duration-200 {{ request()->routeIs('admin.analytics*') ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500' }}" 
                  fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
@@ -95,13 +95,13 @@
 
     <!-- Categories -->
     <li role="none">
-        <a href="{{ route('admin.categories.index') }}" 
-           class="nav-link group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 {{ request()->routeIs('admin.categories.*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}"
+        <a href="{{ route('admin.products.categories.index') }}" 
+           class="nav-link group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 {{ request()->routeIs('admin.products.categories.*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}"
            role="menuitem"
            :title="sidebarCollapsed ? 'Categories' : ''"
-           aria-current="{{ request()->routeIs('admin.categories.*') ? 'page' : 'false' }}"
+           aria-current="{{ request()->routeIs('admin.products.categories.*') ? 'page' : 'false' }}"
            aria-describedby="{{ !sidebarCollapsed ? 'products-section' : '' }}">
-            <svg class="flex-shrink-0 w-5 h-5 mr-3 transition-colors duration-200 {{ request()->routeIs('admin.categories.*') ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500' }}" 
+            <svg class="flex-shrink-0 w-5 h-5 mr-3 transition-colors duration-200 {{ request()->routeIs('admin.products.categories.*') ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500' }}" 
                  fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
             </svg>
@@ -123,13 +123,13 @@
 
     <!-- All Customers -->
     <li role="none">
-        <a href="{{ route('admin.users.index') }}" 
-           class="nav-link group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 {{ request()->routeIs('admin.users.*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}"
+        <a href="{{ route('admin.customers.index') }}" 
+           class="nav-link group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 {{ request()->routeIs('admin.customers.*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900' }}"
            role="menuitem"
            :title="sidebarCollapsed ? 'Customers' : ''"
-           aria-current="{{ request()->routeIs('admin.users.*') ? 'page' : 'false' }}"
+           aria-current="{{ request()->routeIs('admin.customers.*') ? 'page' : 'false' }}"
            aria-describedby="{{ !sidebarCollapsed ? 'customers-section' : '' }}">
-            <svg class="flex-shrink-0 w-5 h-5 mr-3 transition-colors duration-200 {{ request()->routeIs('admin.users.*') ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500' }}" 
+            <svg class="flex-shrink-0 w-5 h-5 mr-3 transition-colors duration-200 {{ request()->routeIs('admin.customers.*') ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500' }}" 
                  fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
             </svg>

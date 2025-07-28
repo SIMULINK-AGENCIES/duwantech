@@ -39,21 +39,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::post('settings', [SettingsController::class, 'update'])->name('settings.update');
     
-    // Theme Settings
-    Route::get('settings/theme', function () {
-        return view('admin.settings.theme');
-    })->name('settings.theme');
-    
-    // Test Pages (Development) - Tasks 2.4.2, 2.4.3, 2.4.4
-    Route::get('test/theme-toggle', function () {
-        return view('admin.test.theme-toggle');
-    })->name('test.theme-toggle');
-    
-    // Theme Configuration & Animations Test - Tasks 2.4.3 & 2.4.4
-    Route::get('test/theme-config-animations', function () {
-        return view('admin.test.theme-config-animations');
-    })->name('test.theme-config-animations');
-    
     // General Settings (Frontend Control)
     Route::get('frontend', [GeneralSettingsController::class, 'index'])->name('frontend.index');
     Route::put('frontend', [GeneralSettingsController::class, 'update'])->name('frontend.update');
@@ -69,9 +54,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     
     // Live User Monitoring API
     Route::get('api/live-stats', [AdminController::class, 'getLiveStats'])->name('api.live-stats');
-    
-    // Search API
-    Route::get('api/search', [AdminController::class, 'search'])->name('api.search');
     
     // Activity Feed
     Route::get('activity', [App\Http\Controllers\Admin\ActivityController::class, 'index'])->name('activity.index');

@@ -1,14 +1,27 @@
-@extends('admin.layout')
+<x-admin.layouts.master title="Frontend Settings">
+    <x-slot name="breadcrumbs">
+        @php
+            $breadcrumbs = [
+                ['title' => 'Settings', 'url' => route('admin.settings.index')],
+                ['title' => 'Frontend Settings', 'url' => route('admin.settings.general')]
+            ];
+        @endphp
+    </x-slot>
 
-@section('title', 'Frontend Settings')
-
-@section('content')
-<div class="space-y-6">
-    <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-bold text-gray-900">Frontend Settings</h1>
-        <div class="flex space-x-2">
+    <!-- Frontend Settings Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Frontend Settings</h1>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                Configure your site's frontend appearance and settings.
+            </p>
+        </div>
+        <div class="mt-4 sm:mt-0 flex space-x-3">
             <a href="{{ route('admin.frontend.public') }}" target="_blank" 
-               class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm">
+               class="btn btn-secondary">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-2M13 7h8m0 0V2m0 5l-8-8"></path>
+                </svg>
                 View Public Settings API
             </a>
         </div>
@@ -20,13 +33,13 @@
         </div>
     @endif
 
-    <div class="bg-white shadow rounded-lg">
+    <div class="card">
         <form action="{{ route('admin.frontend.update') }}" method="POST">
             @csrf
             @method('PUT')
             
             <!-- Site Information Tab -->
-            <div class="border-b border-gray-200">
+            <div class="border-b border-gray-200 dark:border-gray-700">
                 <nav class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
                     <button type="button" class="tab-button border-blue-500 text-blue-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="site">
                         Site Information
@@ -300,48 +313,52 @@
                 </div>
             </div>
 
-            <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end">
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium">
+            <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex justify-end">
+                <button type="submit" class="btn btn-primary">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
                     Save Settings
                 </button>
             </div>
         </form>
     </div>
-</div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Tab functionality
-    const tabButtons = document.querySelectorAll('.tab-button');
-    const tabContents = document.querySelectorAll('.tab-content');
+    @push('scripts')
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tab functionality
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
 
-    tabButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const tabName = this.dataset.tab;
-            
-            // Update button states
-            tabButtons.forEach(btn => {
-                btn.classList.remove('border-blue-500', 'text-blue-600');
-                btn.classList.add('border-transparent', 'text-gray-500');
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const tabName = this.dataset.tab;
+                
+                // Update button states
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('border-blue-500', 'text-blue-600');
+                    btn.classList.add('border-transparent', 'text-gray-500');
+                });
+                this.classList.remove('border-transparent', 'text-gray-500');
+                this.classList.add('border-blue-500', 'text-blue-600');
+                
+                // Update content visibility
+                tabContents.forEach(content => {
+                    content.classList.add('hidden');
+                });
+                document.getElementById(tabName + '-tab').classList.remove('hidden');
             });
-            this.classList.remove('border-transparent', 'text-gray-500');
-            this.classList.add('border-blue-500', 'text-blue-600');
-            
-            // Update content visibility
-            tabContents.forEach(content => {
-                content.classList.add('hidden');
+        });
+
+        // Color picker sync
+        document.querySelectorAll('input[type="color"]').forEach(colorInput => {
+            colorInput.addEventListener('change', function() {
+                const textInput = this.parentElement.querySelector('input[type="text"]');
+                textInput.value = this.value;
             });
-            document.getElementById(tabName + '-tab').classList.remove('hidden');
         });
     });
-
-    // Color picker sync
-    document.querySelectorAll('input[type="color"]').forEach(colorInput => {
-        colorInput.addEventListener('change', function() {
-            const textInput = this.parentElement.querySelector('input[type="text"]');
-            textInput.value = this.value;
-        });
-    });
-});
-</script>
-@endsection 
+    </script>
+    @endpush
+</x-admin.layouts.master>

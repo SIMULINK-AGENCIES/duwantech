@@ -1,6 +1,11 @@
-@extends('admin.layout')
-
-@section('title', 'Live Dashboard')
+<x-admin.layouts.master title="Live Dashboard">
+    <x-slot name="breadcrumbs">
+        @php
+            $breadcrumbs = [
+                ['title' => 'Dashboard', 'url' => route('admin.dashboard')]
+            ];
+        @endphp
+    </x-slot>
 
 @push('styles')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -392,11 +397,6 @@ function liveDashboard() {
             if (this.autoRefresh) {
                 this.startAutoRefresh();
             } else {
-                this.stopAutoRefresh();
-            }
-        },
-        
-        async refreshAll() {
             this.loading = true;
             
             try {
@@ -410,6 +410,12 @@ function liveDashboard() {
             } finally {
                 this.loading = false;
             }
+        }
+    }
+}
+</script>
+@endpush
+</x-admin.layouts.master> }
         }
     }
 }

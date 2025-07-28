@@ -1,20 +1,36 @@
-@extends('admin.layout')
+<x-admin.layouts.master title="M-PESA Settings">
+    <x-slot name="breadcrumbs">
+        @php
+            $breadcrumbs = [
+                ['title' => 'Settings', 'url' => route('admin.settings.index')],
+                ['title' => 'M-PESA Settings', 'url' => route('admin.settings.mpesa')]
+            ];
+        @endphp
+    </x-slot>
 
-@section('title', 'M-PESA Settings')
-
-@section('content')
-<div class="space-y-6">
-    <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-bold text-gray-900">M-PESA Settings</h1>
-        <div class="flex space-x-2">
+    <!-- M-PESA Settings Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">M-PESA Settings</h1>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                Configure M-PESA payment integration settings and credentials.
+            </p>
+        </div>
+        <div class="mt-4 sm:mt-0 flex space-x-3">
             @if($isConfigured ?? false)
                 <button type="button" onclick="testConnection()" 
-                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm">
+                        class="btn btn-secondary">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
                     Test Connection
                 </button>
             @endif
             <button type="button" onclick="resetSettings()" 
-                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm">
+                    class="btn btn-outline-danger">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
                 Reset to Default
             </button>
         </div>
@@ -310,9 +326,128 @@
                         Export Config
                     </button>
                 </div>
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium">
-                    Save M-PESA Settings
+                                <button type="submit" class="btn btn-primary">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Save Settings
                 </button>
+            </div>
+        </form>
+    </div>
+
+    @push('scripts')
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tab functionality
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const tabName = this.dataset.tab;
+                
+                // Update button states
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('border-blue-500', 'text-blue-600');
+                    btn.classList.add('border-transparent', 'text-gray-500');
+                });
+                this.classList.remove('border-transparent', 'text-gray-500');
+                this.classList.add('border-blue-500', 'text-blue-600');
+                
+                // Update content visibility
+                tabContents.forEach(content => {
+                    content.classList.add('hidden');
+                });
+                document.getElementById(tabName + '-tab').classList.remove('hidden');
+            });
+        });
+    });
+
+    function togglePassword(fieldId) {
+        const field = document.getElementById(fieldId);
+        field.type = field.type === 'password' ? 'text' : 'password';
+    }
+
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(function() {
+            // Show temporary success message
+            const originalText = event.target.innerHTML;
+            event.target.innerHTML = '<svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+            setTimeout(() => {
+                event.target.innerHTML = originalText;
+            }, 2000);
+        });
+    }
+
+    function testConnection() {
+        if (!confirm('Test M-PESA connection? This will validate your configuration.')) return;
+        
+        fetch('{{ route("admin.mpesa.test") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('✅ ' + data.message);
+            } else {
+                alert('❌ ' + data.message);
+            }
+        })
+        .catch(error => {
+            alert('❌ Connection test failed: ' + error.message);
+        });
+    }
+
+    function resetSettings() {
+        if (!confirm('Reset all M-PESA settings to default values? This cannot be undone.')) return;
+        
+        fetch('{{ route("admin.mpesa.reset") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                location.reload();
+            } else {
+                alert('Failed to reset settings');
+            }
+        })
+        .catch(error => {
+            alert('Error: ' + error.message);
+        });
+    }
+
+    function exportConfig() {
+        fetch('{{ route("admin.mpesa.export") }}')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const blob = new Blob([JSON.stringify(data.data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = data.filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        })
+        .catch(error => {
+            alert('Export failed: ' + error.message);
+        });
+    }
+    </script>
+    @endpush
+</x-admin.layouts.master>
             </div>
         </form>
     </div>

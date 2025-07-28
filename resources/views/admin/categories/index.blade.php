@@ -1,19 +1,33 @@
-@extends('admin.layout')
+<x-admin.layouts.master title="Categories">
+    <x-slot name="breadcrumbs">
+        @php
+            $breadcrumbs = [
+                ['title' => 'Categories', 'url' => route('admin.categories.index')]
+            ];
+        @endphp
+    </x-slot>
 
-@section('title', 'Categories')
-
-@section('content')
-<div class="space-y-6">
-    <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-bold text-gray-900">Categories</h1>
-        <a href="{{ route('admin.categories.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-            Add Category
-        </a>
+    <!-- Categories Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Categories</h1>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                Manage product categories and organization.
+            </p>
+        </div>
+        <div class="mt-4 sm:mt-0 flex space-x-3">
+            <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                Add Category
+            </a>
+        </div>
     </div>
 
     @if($categories->count() > 0)
-        <div class="bg-white shadow overflow-hidden sm:rounded-md">
-            <ul class="divide-y divide-gray-200">
+        <div class="card">
+            <ul class="divide-y divide-gray-200 dark:divide-gray-700">
                 @foreach($categories as $category)
                     <li>
                         <div class="px-4 py-4 sm:px-6">
@@ -76,14 +90,16 @@
             <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
             </svg>
-            <h3 class="mt-2 text-sm font-medium text-gray-900">No categories</h3>
-            <p class="mt-1 text-sm text-gray-500">Get started by creating a new category.</p>
+            <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">No categories</h3>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by creating a new category.</p>
             <div class="mt-6">
-                <a href="{{ route('admin.categories.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
                     Add Category
                 </a>
             </div>
         </div>
     @endif
-</div>
-@endsection 
+</x-admin.layouts.master>

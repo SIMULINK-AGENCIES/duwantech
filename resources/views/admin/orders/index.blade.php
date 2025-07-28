@@ -1,12 +1,16 @@
-@extends('admin.layout')
+<x-admin.layouts.master title="Orders">
+    <x-slot name="breadcrumbs">
+        @php
+            $breadcrumbs = [
+                ['title' => 'Orders', 'url' => route('admin.orders.index')]
+            ];
+        @endphp
+    </x-slot>
 
-@section('title', 'Orders')
-
-@section('content')
 <div class="space-y-6">
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-bold text-gray-900">Orders</h1>
-        <a href="{{ route('admin.orders.transactions') }}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+        <a href="{{ route('admin.orders.transactions') }}" class="btn btn-success">
             View Transactions
         </a>
     </div>
@@ -68,13 +72,13 @@
         <div class="mt-6">
             {{ $orders->links() }}
         </div>
-    @else
-        <div class="text-center py-12">
-            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
             </svg>
             <h3 class="mt-2 text-sm font-medium text-gray-900">No orders</h3>
             <p class="mt-1 text-sm text-gray-500">Orders will appear here when customers make purchases.</p>
+        </div>
+    @endif
+</div>
+</x-admin.layouts.master> <p class="mt-1 text-sm text-gray-500">Orders will appear here when customers make purchases.</p>
         </div>
     @endif
 </div>

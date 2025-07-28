@@ -1,11 +1,16 @@
-@extends('admin.layout')
+<x-admin.layouts.master title="Performance Monitoring">
+    <x-slot name="breadcrumbs">
+        @php
+            $breadcrumbs = [
+                ['title' => 'Performance Monitoring', 'url' => route('admin.performance.index')]
+            ];
+        @endphp
+    </x-slot>
 
-@section('title', 'Performance Monitoring')
-
-@push('styles')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link rel="stylesheet" href="{{ asset('css/animations.css') }}">
-<style>
+    @push('styles')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ asset('css/animations.css') }}">
+    <style>
     .metric-card {
         transition: all 0.3s ease;
     }
@@ -43,24 +48,23 @@
         justify-content: center;
         z-index: 10;
     }
-</style>
-@endpush
+    </style>
+    @endpush
 
-@section('content')
-@section('content')
-<div x-data="performanceMonitoring()" x-init="init()" class="space-y-6">
-    <!-- Performance Header -->
-    <div class="bg-white rounded-lg shadow-sm p-6">
-        <div class="flex justify-between items-center">
+    <div x-data="performanceMonitoring()" x-init="init()" class="space-y-6">
+        <!-- Performance Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900">Performance Monitoring</h1>
-                <p class="text-gray-600 mt-1">Real-time system performance and optimization</p>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Performance Monitoring</h1>
+                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                    Real-time system performance and optimization
+                </p>
             </div>
             
             <!-- Health Status -->
-            <div x-show="healthSummary" class="flex items-center space-x-4">
+            <div x-show="healthSummary" class="mt-4 sm:mt-0 flex items-center space-x-4">
                 <div class="text-right">
-                    <div class="text-sm text-gray-500">System Health</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">System Health</div>
                     <div class="flex items-center">
                         <span 
                             :class="{
@@ -599,4 +603,5 @@ function performanceMonitoring() {
     }
 }
 </script>
-@endsection
+@endpush
+</x-admin.layouts.master>

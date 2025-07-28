@@ -1,16 +1,22 @@
-@extends('admin.layout')
+<x-admin.layouts.master title="Reports Dashboard">
+    <x-slot name="breadcrumbs">
+        @php
+            $breadcrumbs = [
+                ['title' => 'Reports', 'url' => route('admin.reports.index')]
+            ];
+        @endphp
+    </x-slot>
 
-@section('title', 'Reports Dashboard')
-
-@section('content')
-<div id="app">
-    <div class="min-h-screen bg-gray-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <!-- Header -->
-            <div class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-900">Reports Dashboard</h1>
-                <p class="mt-2 text-gray-600">Comprehensive analytics and business insights</p>
-            </div>
+    <div id="app">
+        <div class="min-h-screen">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <!-- Header -->
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Reports Dashboard</h1>
+                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Comprehensive analytics and business insights</p>
+                    </div>
+                </div>
 
             <!-- Quick Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -357,4 +363,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endpush
-@endsection
+</x-admin.layouts.master>
